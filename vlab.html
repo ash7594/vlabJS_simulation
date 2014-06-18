@@ -33,6 +33,7 @@ body{
 
 <script>
 
+var change_mode = -1;
 var current_img = -1;
 var current_id = 0;
 ////
@@ -42,6 +43,7 @@ var img2 = document.getElementById('img2');
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var csvString = "";
 
 canvas.width = window.innerWidth*0.9;
 canvas.height = window.innerHeight*0.85;
@@ -66,9 +68,14 @@ function object(id,x,y,a,ow,oh,fw,fh) {
 
 //pic_obj.push(new object(1,100,100,0,100,100,100,100));
 
-canvas.addEventListener("mousemove",function(){if(current_img != -1) move_img(event);});
+canvas.addEventListener("mousemove",function(){if(current_img != -1) {
+	if(change_mode == -1) { 
+	var perX = parseInt(pic_obj[current_img].x/canvas.width*100);
+	var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
+	csvString += "m," + current_img + "," + perX + "," + perY + ",";}
+	move_img(event);}});
 canvas.addEventListener("mousedown",function(){findobj(event);});
-canvas.addEventListener("mouseup",function(){current_img = -1;});
+canvas.addEventListener("mouseup",finish_transform);
 canvas.addEventListener("click",createobj);
 window.addEventListener("keydown",function(){if(current_img != -1) zoom_rotate(event);});
 
@@ -94,48 +101,67 @@ function drawcanvas() {
 	/////
 }
 
+function finish_transform() {
+	if(change_mode == 0) {
+		var perX = parseInt(pic_obj[current_img].x/canvas.width*100);
+		var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
+		csvString += perX + "," + perY + "\n";	
+	} else if(change_mode == 1) {
+		var scaling = parseInt(pic_obj[current_img].fh/canvas.height*100);
+		csvString += "s," + current_img + "," + scaling + "\n";
+	} else if(change_mode == 2) {
+		csvString += "r," + current_img + "," + pic_obj[current_img].a + "\n";
+	}
+
+	current_img = -1;
+	change_mode = -1;
+}
+
 function move_img(e) {
 	console.log("1");
+	///////////
+	change_mode = 0;
+	///////////
 	pic_obj[current_img].x = (e.clientX - offsetX) - pic_obj[current_img].fw/2;
 	pic_obj[current_img].y = (e.clientY - offsetY) - pic_obj[current_img].fh/2;
 	drawcanvas();
-
-	///////////////
-
-
-
-	///////////////
-
 }
 
 function zoom_rotate(e) {
 	//console.log(e.keyCode);
 	if(e.keyCode == 107) {
+		////////////
+		change_mode = 1;
+		////////////
 		pic_obj[current_img].fw += 2;
 		pic_obj[current_img].fh += 2;
 	} else if(e.keyCode == 109){
+		////////////
+		change_mode = 1;
+		////////////
 		pic_obj[current_img].fw -= 2;
 		pic_obj[current_img].fh -= 2;
 	} else if(e.keyCode == 39) {
+		////////////
+		change_mode = 2;
+		////////////
 		pic_obj[current_img].a += 2;
 	} else if(e.keyCode == 37) {
+		////////////
+		change_mode = 2;
+		////////////
 		pic_obj[current_img].a -= 2;
 	}
 
 	drawcanvas();
-
-	//////////////
-
-
-
-	//////////////
-
 }
 
 function findobj(e) {
 	for(var i=0;i<pic_obj.length;i++)
-		if((e.clientX - offsetX)  >= pic_obj[i].x && (e.clientX - offsetX) <= (pic_obj[i].x+pic_obj[i].fw) && (e.clientY - offsetY) >= pic_obj[i].y && (e.clientY - offsetY) <= (pic_obj[i].y+pic_obj[i].fh))
+		if((e.clientX - offsetX)  >= pic_obj[i].x && (e.clientX - offsetX) <= (pic_obj[i].x+pic_obj[i].fw) && (e.clientY - offsetY) >= pic_obj[i].y && (e.clientY - offsetY) <= (pic_obj[i].y+pic_obj[i].fh)) {
 			current_img = i;
+			break;
+		}	
 }
 
 function createobj(e) {
@@ -143,6 +169,9 @@ function createobj(e) {
 	if((e.clientX - offsetX) > canvas.width-110) {
 		current_id = parseInt((e.clientY - offsetY)/100);
 		console.log(current_id);
+		///////
+		csvString += "a," + current_id + "," + pic_obj.length + "\n";
+		///////
 		pic_obj.push(new object(current_id+1,100,100,0,100,100,100,100));
 		drawcanvas();
 	}
