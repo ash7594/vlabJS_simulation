@@ -11,8 +11,14 @@
 	margin: 0px;
 }
 
+body{
+	background-color: #000000;
+}
+
 #canvas{
-	border: 2px solid black;		
+	background-color: #FFFFFF;
+	border: 2px solid black;
+	border-radius: 20px;		
 }
 
 </style>
@@ -37,8 +43,13 @@ var img2 = document.getElementById('img2');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth-10;
-canvas.height = window.innerHeight-10;
+canvas.width = window.innerWidth*0.9;
+canvas.height = window.innerHeight*0.85;
+canvas.style.position = "absolute";
+var offsetX = (window.innerWidth - canvas.width)/2;
+var offsetY = (window.innerHeight - canvas.height)/2;
+canvas.style.left = offsetX;
+canvas.style.top = offsetY;
 
 var pic_obj = [];
 
@@ -59,28 +70,45 @@ canvas.addEventListener("mousemove",function(){if(current_img != -1) move_img(ev
 canvas.addEventListener("mousedown",function(){findobj(event);});
 canvas.addEventListener("mouseup",function(){current_img = -1;});
 canvas.addEventListener("click",createobj);
-window.addEventListener("keydown",function(){if(current_img != -1) zoom(event);});
+window.addEventListener("keydown",function(){if(current_img != -1) zoom_rotate(event);});
 
 function drawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
-	for(var i=0;i<pic_obj.length;i++)
-		ctx.drawImage(document.getElementById("img"+pic_obj[i].id),pic_obj[i].x,pic_obj[i].y,pic_obj[i].fw,pic_obj[i].fh);
-
+	for(var i=0;i<pic_obj.length;i++) {
+		if(pic_obj[i].a == 0) 
+			ctx.drawImage(document.getElementById("img"+pic_obj[i].id),pic_obj[i].x,pic_obj[i].y,pic_obj[i].fw,pic_obj[i].fh);
+		else {
+			ctx.save();
+			ctx.translate(pic_obj[i].x+pic_obj[i].fw/2,pic_obj[i].y+pic_obj[i].fh/2);
+			ctx.rotate(pic_obj[i].a*Math.PI/180);
+			ctx.drawImage(document.getElementById("img"+pic_obj[i].id),-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2,pic_obj[i].fw,pic_obj[i].fh);
+			ctx.restore();
+		}
+	}
+	/////
 	ctx.drawImage(img1,canvas.width - 110,0,100,100);
 	ctx.drawImage(img2,canvas.width - 110,100,100,100);
 	ctx.moveTo(canvas.width - 120,0);
 	ctx.lineTo(canvas.width - 120,canvas.height);
-	ctx.stroke();	
+	ctx.stroke();
+	/////
 }
 
 function move_img(e) {
 	console.log("1");
-	pic_obj[current_img].x = e.clientX - pic_obj[current_img].fw/2;
-	pic_obj[current_img].y = e.clientY - pic_obj[current_img].fh/2;
+	pic_obj[current_img].x = (e.clientX - offsetX) - pic_obj[current_img].fw/2;
+	pic_obj[current_img].y = (e.clientY - offsetY) - pic_obj[current_img].fh/2;
 	drawcanvas();
+
+	///////////////
+
+
+
+	///////////////
+
 }
 
-function zoom(e) {
+function zoom_rotate(e) {
 	//console.log(e.keyCode);
 	if(e.keyCode == 107) {
 		pic_obj[current_img].fw += 2;
@@ -88,24 +116,32 @@ function zoom(e) {
 	} else if(e.keyCode == 109){
 		pic_obj[current_img].fw -= 2;
 		pic_obj[current_img].fh -= 2;
+	} else if(e.keyCode == 39) {
+		pic_obj[current_img].a += 2;
+	} else if(e.keyCode == 37) {
+		pic_obj[current_img].a -= 2;
 	}
-	drawcanvas();
-}
 
-function rotate() {
-	
+	drawcanvas();
+
+	//////////////
+
+
+
+	//////////////
+
 }
 
 function findobj(e) {
 	for(var i=0;i<pic_obj.length;i++)
-		if(e.clientX >= pic_obj[i].x && e.clientX <= (pic_obj[i].x+pic_obj[i].fw) && e.clientY >= pic_obj[i].y && e.clientY <= (pic_obj[i].y+pic_obj[i].fh))
+		if((e.clientX - offsetX)  >= pic_obj[i].x && (e.clientX - offsetX) <= (pic_obj[i].x+pic_obj[i].fw) && (e.clientY - offsetY) >= pic_obj[i].y && (e.clientY - offsetY) <= (pic_obj[i].y+pic_obj[i].fh))
 			current_img = i;
 }
 
 function createobj(e) {
 	
-	if(e.clientX > canvas.width-110) {
-		current_id = parseInt(e.clientY/100);
+	if((e.clientX - offsetX) > canvas.width-110) {
+		current_id = parseInt((e.clientY - offsetY)/100);
 		console.log(current_id);
 		pic_obj.push(new object(current_id+1,100,100,0,100,100,100,100));
 		drawcanvas();
