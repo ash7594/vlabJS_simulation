@@ -25,7 +25,8 @@ body{
 
 
 <body>
-
+<button onclick="genCSV();">Genarate CSV</button>
+<button onclick="loadCSV();">Load CSV</button>
 <canvas id="canvas"> 
 </canvas>
 <img id="img1" src="android.png" style="display:none" />
@@ -187,8 +188,69 @@ window.onload = function() {
 }
 
 
+		var xmlHttp;
+function init_ajax(){
+	
+		if(window.ActiveXObject){
+			try{xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");}
+			catch (e){xmlHttp = false;}
+		}
+		else{
+			try{xmlHttp = new XMLHttpRequest();}
+			catch (e){xmlHttp = false;}
+		}
+	}
+		
+function genCSV(){
+		
+		init_ajax();
+		if(!xmlHttp){
+			alert('xmlhttp not working ...');
+		}
+		else {
+			xmlHttp.onreadystatechange=function(){
+			  if (xmlHttp.readyState==4 && xmlHttp.status==200){
+				alert(xmlHttp.responseText);
+				}
+			  else {
+				// alert(xmlHttp.status);
+			  }
+			 }
+			 
+			var data = "data="+csvString;
+			xmlHttp.open("POST","create.php",true);
+			xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlHttp.setRequestHeader("Content-length",data.length);
+			xmlHttp.setRequestHeader("Connection","close");
+			xmlHttp.send(data);
+		}
+		
+	}
 
+function loadCSV(){
+		
+		init_ajax();
+		if(!xmlHttp){
+			alert('jaffa xmlhttp not working ...');
+		}
+		else {
+			xmlHttp.onreadystatechange=function(){
+			  if (xmlHttp.readyState==4 && xmlHttp.status==200){
+				//alert(xmlHttp.responseText);
+					csvString = xmlHttp.responseText;
+				}
+			  else {
+				 //alert(xmlHttp.status);
+			  }
+			 }
+			 
+			xmlHttp.open("GET","display.php",true);
+			xmlHttp.send();
+		}
+		
+	}
 </script>
+
 
 </body>
 </html>
