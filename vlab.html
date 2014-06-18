@@ -1,0 +1,111 @@
+<html>
+
+<head>
+<!--Virtual labs 10:00 18 July 2014-->
+</head>
+
+<style>
+
+*{
+	padding: 0px;
+	margin: 0px;
+}
+
+#canvas{
+	border: 2px solid black;		
+}
+
+</style>
+
+
+<body>
+
+<canvas id="canvas"> 
+</canvas>
+<img id="img1" src="android.png" style="display:none" />
+<img id="img2" src="android2.png" style="display:none" />
+
+<script>
+
+var current_img = -1;
+var current_id = 0;
+////
+var img1 = document.getElementById('img1');
+var img2 = document.getElementById('img2');
+////
+
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth-10;
+canvas.height = window.innerHeight-10;
+
+var pic_obj = [];
+
+function object(id,x,y,a,ow,oh,fw,fh) {
+	this.id = id;
+	this.x = x;
+	this.y = y;
+	this.a = a;
+	this.ow = ow;
+	this.oh = oh;
+	this.fw = fw;
+	this.fh = fh;
+}
+
+//pic_obj.push(new object(1,100,100,0,100,100,100,100));
+
+canvas.addEventListener("mousemove",function(){if(current_img != -1) move_img(event);});
+canvas.addEventListener("mousedown",function(){findobj(event);});
+canvas.addEventListener("mouseup",function(){current_img = -1;});
+canvas.addEventListener("click",createobj);
+
+function drawcanvas() {
+	ctx.clearRect(0,0,canvas.width,canvas.height);
+	for(var i=0;i<pic_obj.length;i++)
+		ctx.drawImage(document.getElementById("img"+pic_obj[i].id),pic_obj[i].x,pic_obj[i].y,pic_obj[i].fw,pic_obj[i].fh);
+
+	ctx.drawImage(img1,canvas.width - 110,0,100,100);
+	ctx.drawImage(img2,canvas.width - 110,100,100,100);
+	ctx.moveTo(canvas.width - 120,0);
+	ctx.lineTo(canvas.width - 120,canvas.height);
+	ctx.stroke();	
+}
+
+function move_img(e) {
+	console.log("1");
+	pic_obj[current_img].x = e.clientX - pic_obj[current_img].fw/2;
+	pic_obj[current_img].y = e.clientY - pic_obj[current_img].fh/2;
+	drawcanvas();
+}
+
+function findobj(e) {
+	for(var i=0;i<pic_obj.length;i++)
+		if(e.clientX >= pic_obj[i].x && e.clientX <= (pic_obj[i].x+pic_obj[i].fw) && e.clientY >= pic_obj[i].y && e.clientY <= (pic_obj[i].y+pic_obj[i].fh))
+			current_img = i;
+}
+
+function createobj(e) {
+	
+	if(e.clientX > canvas.width-110) {
+		current_id = parseInt(e.clientY/100);
+		console.log(current_id);
+		pic_obj.push(new object(current_id+1,100,100,0,100,100,100,100));
+		drawcanvas();
+	}
+}
+
+window.onload = function() {
+	//ctx.clearRect(0,0,canvas.width,canvas.height);
+	ctx.drawImage(img1,canvas.width - 110,0,100,100);
+	ctx.drawImage(img2,canvas.width - 110,100,100,100);
+	ctx.moveTo(canvas.width - 120,0);
+	ctx.lineTo(canvas.width - 120,canvas.height);
+	ctx.stroke();
+}
+//drawcanvas();
+
+</script>
+
+</body>
+</html>
