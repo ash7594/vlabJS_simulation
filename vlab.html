@@ -59,6 +59,7 @@ canvas.addEventListener("mousemove",function(){if(current_img != -1) move_img(ev
 canvas.addEventListener("mousedown",function(){findobj(event);});
 canvas.addEventListener("mouseup",function(){current_img = -1;});
 canvas.addEventListener("click",createobj);
+window.addEventListener("keydown",function(){if(current_img != -1) zoom(event);});
 
 function drawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -77,6 +78,22 @@ function move_img(e) {
 	pic_obj[current_img].x = e.clientX - pic_obj[current_img].fw/2;
 	pic_obj[current_img].y = e.clientY - pic_obj[current_img].fh/2;
 	drawcanvas();
+}
+
+function zoom(e) {
+	//console.log(e.keyCode);
+	if(e.keyCode == 107) {
+		pic_obj[current_img].fw += 2;
+		pic_obj[current_img].fh += 2;
+	} else if(e.keyCode == 109){
+		pic_obj[current_img].fw -= 2;
+		pic_obj[current_img].fh -= 2;
+	}
+	drawcanvas();
+}
+
+function rotate() {
+	
 }
 
 function findobj(e) {
@@ -103,7 +120,8 @@ window.onload = function() {
 	ctx.lineTo(canvas.width - 120,canvas.height);
 	ctx.stroke();
 }
-//drawcanvas();
+
+
 
 </script>
 
