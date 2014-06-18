@@ -31,6 +31,8 @@ body{
 </canvas>
 <img id="img1" src="android.png" style="display:none" />
 <img id="img2" src="android2.png" style="display:none" />
+<img id="img3" src="android3.png" style="display:none" />
+<img id="img4" src="android4.png" style="display:none" />
 
 <script>
 
@@ -40,6 +42,8 @@ var current_id = 0;
 ////
 var img1 = document.getElementById('img1');
 var img2 = document.getElementById('img2');
+var img3 = document.getElementById('img3');
+var img4 = document.getElementById('img4');
 ////
 
 var canvas = document.getElementById('canvas');
@@ -69,16 +73,11 @@ function object(id,x,y,a,ow,oh,fw,fh) {
 
 //pic_obj.push(new object(1,100,100,0,100,100,100,100));
 
-canvas.addEventListener("mousemove",function(){if(current_img != -1) {
-	if(change_mode == -1) { 
-	var perX = parseInt(pic_obj[current_img].x/canvas.width*100);
-	var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
-	csvString += "m," + current_img + "," + perX + "," + perY + ",";}
-	move_img(event);}});
-canvas.addEventListener("mousedown",function(){findobj(event);});
+canvas.addEventListener("mousemove",move_img);
+canvas.addEventListener("mousedown",findobj);
 canvas.addEventListener("mouseup",finish_transform);
 canvas.addEventListener("click",createobj);
-window.addEventListener("keydown",function(){if(current_img != -1) zoom_rotate(event);});
+window.addEventListener("keydown",zoom_rotate);
 
 function drawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -93,13 +92,13 @@ function drawcanvas() {
 			ctx.restore();
 		}
 	}
-	/////
 	ctx.drawImage(img1,canvas.width - 110,0,100,100);
 	ctx.drawImage(img2,canvas.width - 110,100,100,100);
+	ctx.drawImage(img3,canvas.width - 110,200,100,100);
+	ctx.drawImage(img4,canvas.width - 110,300,100,100);
 	ctx.moveTo(canvas.width - 120,0);
 	ctx.lineTo(canvas.width - 120,canvas.height);
 	ctx.stroke();
-	/////
 }
 
 function finish_transform() {
@@ -109,9 +108,11 @@ function finish_transform() {
 		csvString += perX + "," + perY + "\n";	
 	} else if(change_mode == 1) {
 		var scaling = parseInt(pic_obj[current_img].fh/canvas.height*100);
-		csvString += "s," + current_img + "," + scaling + "\n";
+		var cimg = current_img+1;
+		csvString += "s," + cimg + "," + scaling + "\n";
 	} else if(change_mode == 2) {
-		csvString += "r," + current_img + "," + pic_obj[current_img].a + "\n";
+		var cimg = current_img+1;
+		csvString += "r," + cimg + "," + pic_obj[current_img].a + "\n";
 	}
 
 	current_img = -1;
@@ -119,42 +120,52 @@ function finish_transform() {
 }
 
 function move_img(e) {
-	console.log("1");
+	
+	if(current_img != -1 && (change_mode == -1 || change_mode == 0)) {
+		if(change_mode == -1) { 
+			var perX = parseInt(pic_obj[current_img].x/canvas.width*100);
+			var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
+			var cimg = current_img+1;
+			csvString += "m," + cimg + "," + perX + "," + perY + ",";
+		}
 	///////////
 	change_mode = 0;
 	///////////
 	pic_obj[current_img].x = (e.clientX - offsetX) - pic_obj[current_img].fw/2;
 	pic_obj[current_img].y = (e.clientY - offsetY) - pic_obj[current_img].fh/2;
 	drawcanvas();
+	}
 }
 
 function zoom_rotate(e) {
 	//console.log(e.keyCode);
-	if(e.keyCode == 107) {
-		////////////
-		change_mode = 1;
-		////////////
-		pic_obj[current_img].fw += 2;
-		pic_obj[current_img].fh += 2;
-	} else if(e.keyCode == 109){
-		////////////
-		change_mode = 1;
-		////////////
-		pic_obj[current_img].fw -= 2;
-		pic_obj[current_img].fh -= 2;
-	} else if(e.keyCode == 39) {
-		////////////
-		change_mode = 2;
-		////////////
-		pic_obj[current_img].a += 2;
-	} else if(e.keyCode == 37) {
-		////////////
-		change_mode = 2;
-		////////////
-		pic_obj[current_img].a -= 2;
-	}
+	if(current_img != -1) {
+		if(e.keyCode == 107 && (change_mode == -1 || change_mode == 1)) {
+			////////////
+			change_mode = 1;
+			////////////
+			pic_obj[current_img].fw += 2;
+			pic_obj[current_img].fh += 2;
+		} else if(e.keyCode == 109 && (change_mode == -1 || change_mode == 1)){
+			////////////
+			change_mode = 1;
+			////////////
+			pic_obj[current_img].fw -= 2;
+			pic_obj[current_img].fh -= 2;
+		} else if(e.keyCode == 39 && (change_mode == -1 || change_mode == 2)) {
+			////////////
+			change_mode = 2;
+			////////////
+			pic_obj[current_img].a += 2;
+		} else if(e.keyCode == 37 && (change_mode == -1 || change_mode == 2)) {
+			////////////
+			change_mode = 2;
+			////////////
+			pic_obj[current_img].a -= 2;
+		}
 
 	drawcanvas();
+	}
 }
 
 function findobj(e) {
@@ -170,10 +181,10 @@ function createobj(e) {
 	if((e.clientX - offsetX) > canvas.width-110) {
 		current_id = parseInt((e.clientY - offsetY)/100);
 		console.log(current_id);
+		pic_obj.push(new object(current_id+1,100,100,0,100,100,100,100));
 		///////
 		csvString += "a," + current_id + "," + pic_obj.length + "\n";
 		///////
-		pic_obj.push(new object(current_id+1,100,100,0,100,100,100,100));
 		drawcanvas();
 	}
 }
@@ -182,11 +193,12 @@ window.onload = function() {
 	//ctx.clearRect(0,0,canvas.width,canvas.height);
 	ctx.drawImage(img1,canvas.width - 110,0,100,100);
 	ctx.drawImage(img2,canvas.width - 110,100,100,100);
+	ctx.drawImage(img3,canvas.width - 110,200,100,100);
+	ctx.drawImage(img4,canvas.width - 110,300,100,100);
 	ctx.moveTo(canvas.width - 120,0);
 	ctx.lineTo(canvas.width - 120,canvas.height);
 	ctx.stroke();
 }
-
 
 		var xmlHttp;
 function init_ajax(){
@@ -205,15 +217,14 @@ function genCSV(){
 		
 		init_ajax();
 		if(!xmlHttp){
-			alert('xmlhttp not working ...');
+			console.log('xmlhttp not working ...');
 		}
 		else {
 			xmlHttp.onreadystatechange=function(){
 			  if (xmlHttp.readyState==4 && xmlHttp.status==200){
-				alert(xmlHttp.responseText);
+				console.log(xmlHttp.responseText);
 				}
 			  else {
-				// alert(xmlHttp.status);
 			  }
 			 }
 			 
@@ -231,16 +242,14 @@ function loadCSV(){
 		
 		init_ajax();
 		if(!xmlHttp){
-			alert('jaffa xmlhttp not working ...');
+			console.log('xmlhttp not working ...');
 		}
 		else {
 			xmlHttp.onreadystatechange=function(){
 			  if (xmlHttp.readyState==4 && xmlHttp.status==200){
-				//alert(xmlHttp.responseText);
 					csvString = xmlHttp.responseText;
 				}
 			  else {
-				 //alert(xmlHttp.status);
 			  }
 			 }
 			 
