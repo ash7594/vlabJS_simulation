@@ -28,6 +28,10 @@ body{
 	overflow-x: hidden;
 }
 
+#csvDisplay{
+	padding: 10px;
+}
+
 </style>
 
 <body>
@@ -161,10 +165,14 @@ function finish_transform() {
 	if(change_mode == 0) {
 		var perX = parseInt(pic_obj[current_img].x/canvas.width*100);
 		var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
+		pic_obj[current_img].x = parseInt(perX*canvas.width/100);
+		pic_obj[current_img].y = parseInt(perY*canvas.height/100);
 		csvString += perX + "," + perY + "\n";	
 	} else if(change_mode == 1) {
 		var scaling = parseInt(pic_obj[current_img].fh/canvas.height*100);
 		var cimg = current_img+1;
+		pic_obj[current_img].fh = parseInt(scaling*canvas.height/100);
+		pic_obj[current_img].fw = parseInt(pic_obj[current_img].fh*pic_obj[current_img].ow/pic_obj[current_img].oh);
 		csvString += "s," + cimg + "," + scaling + "\n";
 	} else if(change_mode == 2) {
 		var cimg = current_img+1;
@@ -173,6 +181,7 @@ function finish_transform() {
 
 	current_img = -1;
 	change_mode = -1;
+	drawcanvas();
 }
 
 function move_img(e) {
