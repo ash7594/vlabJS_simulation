@@ -35,6 +35,7 @@ body{
 <button onclick="loadCSV();">Load CSV</button>
 <button onclick="pre_simulate();">Simulate</button>
 <div id="pics">
+<font id="csvDisplay" color="#FF0000" style="display: none"></font>	
 <table id="picTable" width="200" border="2">
 	<tr>
 		<td width="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
@@ -295,6 +296,8 @@ var sx,sy,sd;
 function pre_simulate() {
 	removeAllEventListeners();
 	document.getElementById("picTable").style.display = "none";
+	document.getElementById("csvDisplay").style.display = "block";
+	document.getElementById("csvDisplay").innerHTML = "";
 	spic_obj = [];
 	ci = 0;
 	csv = csvString.split("\n");
@@ -304,7 +307,7 @@ function pre_simulate() {
 function simulate(mode,imgIn) {
 	//ctx.clearRect(0,0,canvas.width,canvas.height);
 	if(mode == 0) {
-		document.getElementById("pics").innerHTML = csv[ci];
+		document.getElementById("csvDisplay").innerHTML += csv[ci] + "<BR>";
 		if(csv[ci][0] == 'a') {
 			var items = csv[ci].split(",");
 			spic_obj.push(new object(parseInt(items[1])+1,100,100,0,100,100,100,100));
@@ -394,6 +397,7 @@ function simulate(mode,imgIn) {
 	} else {
 		console.log("simulation done");
 		drawcanvas();
+		document.getElementById("csvDisplay").style.display = "none";
 		document.getElementById("picTable").style.display = "block";
 		addAllEventListeners();
 		clearTimeout(simtym);
