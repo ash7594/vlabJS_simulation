@@ -23,7 +23,7 @@ body{
 }
 
 #pics{
-	background-color: red;
+	background-color: #333333;
 	overflow: scroll;
 	overflow-x: hidden;
 }
@@ -257,6 +257,7 @@ function waste() {
 var simtym;
 var csv,ci;
 var sr,ss;
+var sx,sy,sd;
 function pre_simulate() {
 	spic_obj = [];
 	ci = 0;
@@ -274,6 +275,9 @@ function simulate(mode,imgIn) {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;	
 			mode = 1;
+			sx = parseInt(parseInt(items[4])*canvas.width/100);
+			sy = parseInt(parseInt(items[5])*canvas.height/100);
+			sd = Math.atan((spic_obj[imgIn].y-sy)/(spic_obj[imgIn].x-sx));
 		} else if(csv[ci][0] == 's') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;	
@@ -288,8 +292,25 @@ function simulate(mode,imgIn) {
 	}	
 
 	if(mode == 1) {
-
-	} if(mode == 2) {
+		if(Math.sqrt(Math.pow(Math.abs(sx-spic_obj[imgIn].x),2) + Math.pow(Math.abs(sy-spic_obj[imgIn].y),2)) > 2) {
+			if(sx > spic_obj[imgIn].x) {
+				spic_obj[imgIn].x += (2*Math.cos(sd));
+			} else if(sx < spic_obj[imgIn].x) {
+				spic_obj[imgIn].x -= (2*Math.cos(sd));
+			}
+			if(sy > spic_obj[imgIn].y) {
+				spic_obj[imgIn].y += (2*Math.sin(sd));
+			} else if(sy < spic_obj[imgIn].y) {
+				spic_obj[imgIn].y -= (2*Math.sin(sd));
+			} 
+		} else {
+			spic_obj[imgIn].x = sx;
+			spic_obj[imgIn].y = sy;
+			mode = 0;
+			imgIn = 0;
+			ci++;
+		}
+	} else if(mode == 2) {
 		if(spic_obj[imgIn].fh<ss) {
 			if(Math.abs(spic_obj[imgIn].fh-ss) < 2) {
 				spic_obj[imgIn].fh = ss;
@@ -332,7 +353,7 @@ function simulate(mode,imgIn) {
 		if(mode == 0)
 			simtym = setTimeout(function(){simulate(mode,imgIn);},100);
 		else
-			simtym = setTimeout(function(){simulate(mode,imgIn);},10);
+			simtym = setTimeout(function(){simulate(mode,imgIn);},5);
 	} else {
 		console.log("done");
 		clearTimeout(simtym);
