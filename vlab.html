@@ -186,8 +186,8 @@ function move_img(e) {
 	///////////
 	change_mode = 0;
 	///////////
-	pic_obj[current_img].x = (e.clientX - offsetX) - pic_obj[current_img].fw/2;
-	pic_obj[current_img].y = (e.clientY - offsetY) - pic_obj[current_img].fh/2;
+	pic_obj[current_img].x = parseInt((e.clientX - offsetX) - pic_obj[current_img].fw/2);
+	pic_obj[current_img].y = parseInt((e.clientY - offsetY) - pic_obj[current_img].fh/2);
 	drawcanvas();
 	}
 }
@@ -278,7 +278,7 @@ function simulate(mode,imgIn) {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;	
 			mode = 2;
-			ss = parseInt(items[2]);
+			ss = parseInt(parseInt(items[2])*canvas.height/100);
 		} else if(csv[ci][0] == 'r') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;	
@@ -287,9 +287,32 @@ function simulate(mode,imgIn) {
 		}
 	}	
 
+	if(mode == 1) {
 
-	if(mode == 2) {
-
+	} if(mode == 2) {
+		if(spic_obj[imgIn].fh<ss) {
+			if(Math.abs(spic_obj[imgIn].fh-ss) < 2) {
+				spic_obj[imgIn].fh = ss;
+				spic_obj[imgIn].fw += Math.abs(spic_obj[imgIn].fh-ss);
+			}	
+			else {
+				spic_obj[imgIn].fh += 2;
+				spic_obj[imgIn].fw += 2;
+			}	
+		} else if(spic_obj[imgIn].fh>ss) {
+			if(Math.abs(spic_obj[imgIn].fh-ss) < 2) {
+				spic_obj[imgIn].fh = ss;
+				spic_obj[imgIn].fw -= Math.abs(spic_obj[imgIn].fh-ss);
+			}	
+			else {
+				spic_obj[imgIn].fh -= 2;
+				spic_obj[imgIn].fw -= 2;
+			}	
+		} else {
+			mode = 0;
+			imgIn = 0;
+			ci++;
+		}
 	} else if(mode == 3) {
 		if(spic_obj[imgIn].a<sr) 
 			spic_obj[imgIn].a += 2;
@@ -313,7 +336,7 @@ function simulate(mode,imgIn) {
 	} else {
 		console.log("done");
 		clearTimeout(simtym);
-	}	
+	}
 }
 
 var xmlHttp;
