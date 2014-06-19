@@ -37,7 +37,7 @@ body{
 <div id="pics">
 <table width="200" border="2">
 	<tr>
-		<td width="100"><img id="img1" src="android.png" height="100px" width="100px" onclick="createobj(1);" /></td>
+		<td width="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
 		<td width="100"><img id="img2" src="android2.png" height="100px" width="100px" onclick="createobj(2);" /></td>
 	</tr>
 	<tr> 
@@ -183,12 +183,15 @@ function move_img(e) {
 			var cimg = current_img+1;
 			csvString += "m," + cimg + "," + perX + "," + perY + ",";
 		}
-	///////////
-	change_mode = 0;
-	///////////
-	pic_obj[current_img].x = parseInt((e.clientX - offsetX) - pic_obj[current_img].fw/2);
-	pic_obj[current_img].y = parseInt((e.clientY - offsetY) - pic_obj[current_img].fh/2);
-	drawcanvas();
+		///////////
+		change_mode = 0;
+		///////////
+		//if(parseInt((e.clientX - offsetX) - pic_obj[current_img].fw/2) < 0 || parseInt((e.clientY - offsetY) - pic_obj[current_img].fh/2) < 0 || parseInt((e.clientX - offsetX) - pic_obj[current_img].fw/2) > (canvas.width - pic_obj[current_img].fw) || parseInt((e.clientY - offsetY)-pic_obj[current_img].fh/2) > (canvas.height - pic_obj[current_img].fh)) {
+		//} else {
+			pic_obj[current_img].x = parseInt((e.clientX - offsetX) - pic_obj[current_img].fw/2);
+			pic_obj[current_img].y = parseInt((e.clientY - offsetY) - pic_obj[current_img].fh/2);
+			drawcanvas();
+		//}
 	}
 }
 
@@ -254,11 +257,53 @@ function waste() {
 	ctx.stroke();
 }
 
+function addAllEventListeners() {
+	canvas.addEventListener("mousemove",move_img);
+	canvas.addEventListener("mousedown",findobj);
+	canvas.addEventListener("mouseup",finish_transform);
+	window.addEventListener("keydown",zoom_rotate);
+
+	img1.addEventListener("click",function(){createobj(1);});
+	img2.addEventListener("click",function(){createobj(2);});
+	img3.addEventListener("click",function(){createobj(3);});
+	img4.addEventListener("click",function(){createobj(4);});
+	img5.addEventListener("click",function(){createobj(5);});
+	img6.addEventListener("click",function(){createobj(6);});
+	img7.addEventListener("click",function(){createobj(7);});
+	img8.addEventListener("click",function(){createobj(8);});
+	img9.addEventListener("click",function(){createobj(9);});
+	img10.addEventListener("click",function(){createobj(10);});
+	img11.addEventListener("click",function(){createobj(11);});
+	img12.addEventListener("click",function(){createobj(12);});
+}
+
+function removeAllEventListeners() {
+	canvas.removeEventListener("mousemove",move_img);
+	canvas.removeEventListener("mousedown",findobj);
+	canvas.removeEventListener("mouseup",finish_transform);
+	window.removeEventListener("keydown",zoom_rotate);
+
+	img1.removeEventListener("click",function(){createobj(1);});
+	img2.removeEventListener("click",function(){createobj(2);});
+	img3.removeEventListener("click",function(){createobj(3);});
+	img4.removeEventListener("click",function(){createobj(4);});
+	img5.removeEventListener("click",function(){createobj(5);});
+	img6.removeEventListener("click",function(){createobj(6);});
+	img7.removeEventListener("click",function(){createobj(7);});
+	img8.removeEventListener("click",function(){createobj(8);});
+	img9.removeEventListener("click",function(){createobj(9);});
+	img10.removeEventListener("click",function(){createobj(10);});
+	img11.removeEventListener("click",function(){createobj(11);});
+	img12.removeEventListener("click",function(){createobj(12);});
+}
+
 var simtym;
 var csv,ci;
 var sr,ss;
 var sx,sy,sd;
+
 function pre_simulate() {
+	removeAllEventListeners();
 	spic_obj = [];
 	ci = 0;
 	csv = csvString.split("\n");
@@ -277,7 +322,7 @@ function simulate(mode,imgIn) {
 			mode = 1;
 			sx = parseInt(parseInt(items[4])*canvas.width/100);
 			sy = parseInt(parseInt(items[5])*canvas.height/100);
-			sd = Math.atan((spic_obj[imgIn].y-sy)/(spic_obj[imgIn].x-sx));
+			sd = Math.abs(Math.atan((spic_obj[imgIn].y-sy)/(spic_obj[imgIn].x-sx)));
 		} else if(csv[ci][0] == 's') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;	
