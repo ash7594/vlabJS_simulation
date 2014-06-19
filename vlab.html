@@ -18,21 +18,50 @@ body{
 #canvas{
 	background-color: #FFFFFF;
 	border: 2px solid black;
-	border-radius: 20px;		
+	border-radius: 20px;
+}
+
+#pics{
+	background-color: red;
+	overflow: scroll;
+	overflow-x: hidden;
 }
 
 </style>
 
-
 <body>
 <button onclick="genCSV();">Genarate CSV</button>
 <button onclick="loadCSV();">Load CSV</button>
+<div id="pics">
+<table width="200" border="2">
+	<tr>
+		<td width="100"><img id="img1" src="android.png" height="100px" width="100px" onclick="createobj(1);" /></td>
+		<td width="100"><img id="img2" src="android2.png" height="100px" width="100px" onclick="createobj(2);" /></td>
+	</tr>
+	<tr> 
+		<td width="100"><img id="img3" src="android3.png" height="100px" width="100px" onclick="createobj(3);" /></td>
+		<td width="100"><img id="img4" src="android4.png" height="100px" width="100px" onclick="createobj(4);" /></td>
+	</tr>
+	<tr>
+		<td width="100"><img id="img5" src="android.png" height="100px" width="100px" onclick="createobj(5);" /></td>
+		<td width="100"><img id="img6" src="android2.png" height="100px" width="100px" onclick="createobj(6);" /></td>
+	</tr>
+	<tr> 
+		<td width="100"><img id="img7" src="android3.png" height="100px" width="100px" onclick="createobj(7);" /></td>
+		<td width="100"><img id="img8" src="android4.png" height="100px" width="100px" onclick="createobj(8);" /></td>
+	</tr>
+	<tr>
+		<td width="100"><img id="img9" src="android.png" height="100px" width="100px" onclick="createobj(9);" /></td>
+		<td width="100"><img id="img10" src="android2.png" height="100px" width="100px" onclick="createobj(10);" /></td>
+	</tr>
+	<tr> 
+		<td width="100"><img id="img11" src="android3.png" height="100px" width="100px" onclick="createobj(11);" /></td>
+		<td width="100"><img id="img12" src="android4.png" height="100px" width="100px" onclick="createobj(12);" /></td>
+	</tr>
+</table>
+</div>
 <canvas id="canvas"> 
 </canvas>
-<img id="img1" src="android.png" style="display:none" />
-<img id="img2" src="android2.png" style="display:none" />
-<img id="img3" src="android3.png" style="display:none" />
-<img id="img4" src="android4.png" style="display:none" />
 
 <script>
 
@@ -44,19 +73,35 @@ var img1 = document.getElementById('img1');
 var img2 = document.getElementById('img2');
 var img3 = document.getElementById('img3');
 var img4 = document.getElementById('img4');
+var img5 = document.getElementById('img5');
+var img6 = document.getElementById('img6');
+var img7 = document.getElementById('img7');
+var img8 = document.getElementById('img8');
+var img9 = document.getElementById('img9');
+var img10 = document.getElementById('img10');
+var img11 = document.getElementById('img11');
+var img12 = document.getElementById('img12');
 ////
 
+var picTable = document.getElementById('pics');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 var csvString = "";
 
-canvas.width = window.innerWidth*0.9;
+canvas.width = window.innerWidth*0.8;
 canvas.height = window.innerHeight*0.85;
 canvas.style.position = "absolute";
-var offsetX = (window.innerWidth - canvas.width)/2;
+
+picTable.style.height = canvas.height;
+picTable.style.width = 226;
+var offsetX = (window.innerWidth - canvas.width - 226)/2;
 var offsetY = (window.innerHeight - canvas.height)/2;
 canvas.style.left = offsetX;
 canvas.style.top = offsetY;
+
+picTable.style.position = "absolute";
+picTable.style.left = offsetX + 4 + canvas.width;
+picTable.style.top = offsetY;
 
 var pic_obj = [];
 
@@ -76,7 +121,6 @@ function object(id,x,y,a,ow,oh,fw,fh) {
 canvas.addEventListener("mousemove",move_img);
 canvas.addEventListener("mousedown",findobj);
 canvas.addEventListener("mouseup",finish_transform);
-canvas.addEventListener("click",createobj);
 window.addEventListener("keydown",zoom_rotate);
 
 function drawcanvas() {
@@ -92,13 +136,13 @@ function drawcanvas() {
 			ctx.restore();
 		}
 	}
-	ctx.drawImage(img1,canvas.width - 110,0,100,100);
+	/*ctx.drawImage(img1,canvas.width - 110,0,100,100);
 	ctx.drawImage(img2,canvas.width - 110,100,100,100);
 	ctx.drawImage(img3,canvas.width - 110,200,100,100);
 	ctx.drawImage(img4,canvas.width - 110,300,100,100);
 	ctx.moveTo(canvas.width - 120,0);
 	ctx.lineTo(canvas.width - 120,canvas.height);
-	ctx.stroke();
+	ctx.stroke();*/
 }
 
 function finish_transform() {
@@ -176,7 +220,7 @@ function findobj(e) {
 		}	
 }
 
-function createobj(e) {
+/*function createobj(e) {
 	
 	if((e.clientX - offsetX) > canvas.width-110) {
 		current_id = parseInt((e.clientY - offsetY)/100);
@@ -187,9 +231,17 @@ function createobj(e) {
 		///////
 		drawcanvas();
 	}
+}*/
+
+function createobj(picid) {
+	pic_obj.push(new object(picid,100,100,0,100,100,100,100));
+	///////
+	csvString += "a," + current_id + "," + pic_obj.length + "\n";
+	///////
+	drawcanvas();
 }
 
-window.onload = function() {
+function waste() {
 	//ctx.clearRect(0,0,canvas.width,canvas.height);
 	ctx.drawImage(img1,canvas.width - 110,0,100,100);
 	ctx.drawImage(img2,canvas.width - 110,100,100,100);
