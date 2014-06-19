@@ -24,7 +24,7 @@ body{
 
 #pics{
 	background-color: #333333;
-	overflow: scroll;
+	overflow: auto;
 	overflow-x: hidden;
 }
 
@@ -35,30 +35,30 @@ body{
 <button onclick="loadCSV();">Load CSV</button>
 <button onclick="pre_simulate();">Simulate</button>
 <div id="pics">
-<table width="200" border="2">
+<table id="picTable" width="200" border="2">
 	<tr>
 		<td width="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img2" src="android2.png" height="100px" width="100px" onclick="createobj(2);" /></td>
+		<td width="100"><img id="img2" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100"><img id="img3" src="android3.png" height="100px" width="100px" onclick="createobj(3);" /></td>
-		<td width="100"><img id="img4" src="android4.png" height="100px" width="100px" onclick="createobj(4);" /></td>
+		<td width="100"><img id="img3" src="android3.png" height="100px" width="100px" /></td>
+		<td width="100"><img id="img4" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr>
-		<td width="100"><img id="img5" src="android.png" height="100px" width="100px" onclick="createobj(5);" /></td>
-		<td width="100"><img id="img6" src="android2.png" height="100px" width="100px" onclick="createobj(6);" /></td>
+		<td width="100"><img id="img5" src="android.png" height="100px" width="100px" /></td>
+		<td width="100"><img id="img6" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100"><img id="img7" src="android3.png" height="100px" width="100px" onclick="createobj(7);" /></td>
-		<td width="100"><img id="img8" src="android4.png" height="100px" width="100px" onclick="createobj(8);" /></td>
+		<td width="100"><img id="img7" src="android3.png" height="100px" width="100px" /></td>
+		<td width="100"><img id="img8" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr>
-		<td width="100"><img id="img9" src="android.png" height="100px" width="100px" onclick="createobj(9);" /></td>
-		<td width="100"><img id="img10" src="android2.png" height="100px" width="100px" onclick="createobj(10);" /></td>
+		<td width="100"><img id="img9" src="android.png" height="100px" width="100px" /></td>
+		<td width="100"><img id="img10" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100"><img id="img11" src="android3.png" height="100px" width="100px" onclick="createobj(11);" /></td>
-		<td width="100"><img id="img12" src="android4.png" height="100px" width="100px" onclick="createobj(12);" /></td>
+		<td width="100"><img id="img11" src="android3.png" height="100px" width="100px" /></td>
+		<td width="100"><img id="img12" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
 </table>
 </div>
@@ -239,6 +239,7 @@ function findobj(e) {
 }
 
 function createobj(picid) {
+	console.log("obj created");
 	pic_obj.push(new object(picid,100,100,0,100,100,100,100));
 	///////
 	csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
@@ -257,12 +258,7 @@ function waste() {
 	ctx.stroke();
 }
 
-function addAllEventListeners() {
-	canvas.addEventListener("mousemove",move_img);
-	canvas.addEventListener("mousedown",findobj);
-	canvas.addEventListener("mouseup",finish_transform);
-	window.addEventListener("keydown",zoom_rotate);
-
+function imageCreationListeners() {
 	img1.addEventListener("click",function(){createobj(1);});
 	img2.addEventListener("click",function(){createobj(2);});
 	img3.addEventListener("click",function(){createobj(3);});
@@ -277,24 +273,18 @@ function addAllEventListeners() {
 	img12.addEventListener("click",function(){createobj(12);});
 }
 
+function addAllEventListeners() {
+	canvas.addEventListener("mousemove",move_img);
+	canvas.addEventListener("mousedown",findobj);
+	canvas.addEventListener("mouseup",finish_transform);
+	window.addEventListener("keydown",zoom_rotate);
+}
+
 function removeAllEventListeners() {
 	canvas.removeEventListener("mousemove",move_img);
 	canvas.removeEventListener("mousedown",findobj);
 	canvas.removeEventListener("mouseup",finish_transform);
 	window.removeEventListener("keydown",zoom_rotate);
-
-	img1.removeEventListener("click",function(){createobj(1);});
-	img2.removeEventListener("click",function(){createobj(2);});
-	img3.removeEventListener("click",function(){createobj(3);});
-	img4.removeEventListener("click",function(){createobj(4);});
-	img5.removeEventListener("click",function(){createobj(5);});
-	img6.removeEventListener("click",function(){createobj(6);});
-	img7.removeEventListener("click",function(){createobj(7);});
-	img8.removeEventListener("click",function(){createobj(8);});
-	img9.removeEventListener("click",function(){createobj(9);});
-	img10.removeEventListener("click",function(){createobj(10);});
-	img11.removeEventListener("click",function(){createobj(11);});
-	img12.removeEventListener("click",function(){createobj(12);});
 }
 
 var simtym;
@@ -304,6 +294,7 @@ var sx,sy,sd;
 
 function pre_simulate() {
 	removeAllEventListeners();
+	document.getElementById("picTable").style.display = "none";
 	spic_obj = [];
 	ci = 0;
 	csv = csvString.split("\n");
@@ -313,6 +304,7 @@ function pre_simulate() {
 function simulate(mode,imgIn) {
 	//ctx.clearRect(0,0,canvas.width,canvas.height);
 	if(mode == 0) {
+		document.getElementById("pics").innerHTML = csv[ci];
 		if(csv[ci][0] == 'a') {
 			var items = csv[ci].split(",");
 			spic_obj.push(new object(parseInt(items[1])+1,100,100,0,100,100,100,100));
@@ -400,7 +392,10 @@ function simulate(mode,imgIn) {
 		else
 			simtym = setTimeout(function(){simulate(mode,imgIn);},5);
 	} else {
-		console.log("done");
+		console.log("simulation done");
+		drawcanvas();
+		document.getElementById("picTable").style.display = "block";
+		addAllEventListeners();
 		clearTimeout(simtym);
 	}
 }
@@ -463,6 +458,10 @@ function loadCSV(){
 		}
 		
 	}
+
+addAllEventListeners();
+imageCreationListeners();
+
 </script>
 
 
