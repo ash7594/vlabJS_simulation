@@ -32,39 +32,63 @@ body{
 	padding: 10px;
 }
 
+td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+#container{
+	padding: 25px;
+	z-index: 1000;
+	background-color: #222222;
+}
+
 </style>
 
 <body>
+
+<div id="container" style="display: block">
+	<font color="red">Enter the Text:</font>
+	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	<button value="Done" onclick="textbox();">Done</button>
+ 	<BR><BR>
+	<input id="con_text" type="text" size="25" value="" autofocus />
+</div>	
+
 <button onclick="genCSV();">Genarate CSV</button>
 <button onclick="loadCSV();">Load CSV</button>
 <button onclick="pre_simulate();">Simulate</button>
 <div id="pics">
-<font id="csvDisplay" color="#FF0000" style="display: none"></font>	
+<font id="csvDisplay" color="#FF0000" style="display: none"></font>
 <table id="picTable" width="200" border="2">
 	<tr>
-		<td width="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img2" src="android2.png" height="100px" width="100px" /></td>
-	</tr>
-	<tr> 
-		<td width="100"><img id="img3" src="android3.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img4" src="android4.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><strong><font color="red" id="dline">Line</font></strong></td>
+		<td width="100" height="100"><strong><font color="red" id="dtbox">TextBox</font></strong></td>
 	</tr>
 	<tr>
-		<td width="100"><img id="img5" src="android.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img6" src="android2.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img2" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100"><img id="img7" src="android3.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img8" src="android4.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img3" src="android3.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img4" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr>
-		<td width="100"><img id="img9" src="android.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img10" src="android2.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img5" src="android.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img6" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100"><img id="img11" src="android3.png" height="100px" width="100px" /></td>
-		<td width="100"><img id="img12" src="android4.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img7" src="android3.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img8" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
+	<tr>
+		<td width="100" height="100"><img id="img9" src="android.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img10" src="android2.png" height="100px" width="100px" /></td>
+	</tr>
+	<tr> 
+		<td width="100" height="100"><img id="img11" src="android3.png" height="100px" width="100px" /></td>
+		<td width="100" height="100"><img id="img12" src="android4.png" height="100px" width="100px" /></td>
+	</tr>	
 </table>
 </div>
 <canvas id="canvas"> 
@@ -75,7 +99,10 @@ body{
 var change_mode = -1;
 var current_img = -1;
 var current_id = 0;
+var pauseFunctionality = false;
 ////
+var dline = document.getElementById('dline');
+var dtbox = document.getElementById('dtbox');
 var img1 = document.getElementById('img1');
 var img2 = document.getElementById('img2');
 var img3 = document.getElementById('img3');
@@ -90,6 +117,8 @@ var img11 = document.getElementById('img11');
 var img12 = document.getElementById('img12');
 ////
 
+var container = document.getElementById('container');
+var con_text = document.getElementById('con_text');
 var picTable = document.getElementById('pics');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -109,6 +138,10 @@ canvas.style.top = offsetY;
 picTable.style.position = "absolute";
 picTable.style.left = offsetX + 4 + canvas.width;
 picTable.style.top = offsetY;
+
+container.style.position = "absolute";
+container.style.left = (window.innerWidth - 250)/2;
+container.style.top = (window.innerHeight)/2 - 100;
 
 var pic_obj = [];
 var spic_obj = [];
@@ -249,12 +282,46 @@ function findobj(e) {
 }
 
 function createobj(picid) {
-	console.log("obj created");
-	pic_obj.push(new object(picid,100,100,0,100,100,100,100));
-	///////
-	csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
-	///////
-	drawcanvas();
+	if(pauseFunctionality == false) {
+		console.log("obj created");
+		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100));
+		///////
+		csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
+		///////
+		drawcanvas();
+	}
+}
+
+function drawobj(drawid) {
+	if(pauseFunctionality == false) {
+		console.log("draw created");
+		if(drawid == -2) {
+			pic_obj.push(new object(drawid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,20,0,0,0)); //20 is pixel size 
+			removeAllEventListeners();
+			stopImgListeners();
+			
+		}
+	}
+}
+
+function stopImgListeners() {
+	pauseFunctionality = true;
+}
+
+function resumeImgListeners() {
+	pauseFunctionality = false;
+}
+
+function textbox() {
+	if(con_text.value == "") {
+		alert("Cannot Be Empty");
+		return;
+	}
+	if(con_text.value.indexOf(',') !== -1) {
+		alert("The character ',' is not allowed");
+		return;
+	}
+
 }
 
 function waste() {
@@ -269,6 +336,8 @@ function waste() {
 }
 
 function imageCreationListeners() {
+	dline.addEventListener("click",function(){drawobj(-1);});
+	dtbox.addEventListener("click",function(){drawobj(-2);});
 	img1.addEventListener("click",function(){createobj(1);});
 	img2.addEventListener("click",function(){createobj(2);});
 	img3.addEventListener("click",function(){createobj(3);});
