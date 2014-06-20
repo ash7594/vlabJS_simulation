@@ -443,9 +443,9 @@ function genCSV(){
 			 
 			var data = "data="+csvString;
 			xmlHttp.open("POST","create.php",true);
-			xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			xmlHttp.setRequestHeader("Content-length",data.length);
-			xmlHttp.setRequestHeader("Connection","close");
+			//xmlHttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			//xmlHttp.setRequestHeader("Content-length",data.length);
+			//xmlHttp.setRequestHeader("Connection","close");
 			xmlHttp.send(data);
 		}
 		
