@@ -47,7 +47,7 @@ td {
 
 <body>
 
-<div id="container" style="display: block">
+<div id="container" style="display: none">
 	<font color="red">Enter the Text:</font>
 	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 	<button value="Done" onclick="textbox();">Done</button>
@@ -62,32 +62,32 @@ td {
 <font id="csvDisplay" color="#FF0000" style="display: none"></font>
 <table id="picTable" width="200" border="2">
 	<tr>
-		<td width="100" height="100"><strong><font color="red" id="dline">Line</font></strong></td>
-		<td width="100" height="100"><strong><font color="red" id="dtbox">TextBox</font></strong></td>
+		<td id="td_dline" width="100" height="100"><strong><font color="red" id="dline">Line</font></strong></td>
+		<td id="td_dtbox" width="100" height="100"><strong><font color="red" id="dtbox">TextBox</font></strong></td>
 	</tr>
 	<tr>
-		<td width="100" height="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
-		<td width="100" height="100"><img id="img2" src="android2.png" height="100px" width="100px" /></td>
+		<td id="td_img1" width="100" height="100"><img id="img1" src="android.png" height="100px" width="100px" /></td>
+		<td id="td_img2" width="100" height="100"><img id="img2" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100" height="100"><img id="img3" src="android3.png" height="100px" width="100px" /></td>
-		<td width="100" height="100"><img id="img4" src="android4.png" height="100px" width="100px" /></td>
+		<td id="td_img3" width="100" height="100"><img id="img3" src="android3.png" height="100px" width="100px" /></td>
+		<td id="td_img4" width="100" height="100"><img id="img4" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr>
-		<td width="100" height="100"><img id="img5" src="android.png" height="100px" width="100px" /></td>
-		<td width="100" height="100"><img id="img6" src="android2.png" height="100px" width="100px" /></td>
+		<td id="td_img5" width="100" height="100"><img id="img5" src="android.png" height="100px" width="100px" /></td>
+		<td id="td_img6" width="100" height="100"><img id="img6" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100" height="100"><img id="img7" src="android3.png" height="100px" width="100px" /></td>
-		<td width="100" height="100"><img id="img8" src="android4.png" height="100px" width="100px" /></td>
+		<td id="td_img7" width="100" height="100"><img id="img7" src="android3.png" height="100px" width="100px" /></td>
+		<td id="td_img8" width="100" height="100"><img id="img8" src="android4.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr>
-		<td width="100" height="100"><img id="img9" src="android.png" height="100px" width="100px" /></td>
-		<td width="100" height="100"><img id="img10" src="android2.png" height="100px" width="100px" /></td>
+		<td id="td_img9" width="100" height="100"><img id="img9" src="android.png" height="100px" width="100px" /></td>
+		<td id="td_img10" width="100" height="100"><img id="img10" src="android2.png" height="100px" width="100px" /></td>
 	</tr>
 	<tr> 
-		<td width="100" height="100"><img id="img11" src="android3.png" height="100px" width="100px" /></td>
-		<td width="100" height="100"><img id="img12" src="android4.png" height="100px" width="100px" /></td>
+		<td id="td_img11" width="100" height="100"><img id="img11" src="android3.png" height="100px" width="100px" /></td>
+		<td id="td_img12" width="100" height="100"><img id="img12" src="android4.png" height="100px" width="100px" /></td>
 	</tr>	
 </table>
 </div>
@@ -115,6 +115,21 @@ var img9 = document.getElementById('img9');
 var img10 = document.getElementById('img10');
 var img11 = document.getElementById('img11');
 var img12 = document.getElementById('img12');
+////
+var td_dline = document.getElementById('td_dline');
+var td_dtbox = document.getElementById('td_dtbox');
+var td_img1 = document.getElementById('td_img1');
+var td_img2 = document.getElementById('td_img2');
+var td_img3 = document.getElementById('td_img3');
+var td_img4 = document.getElementById('td_img4');
+var td_img5 = document.getElementById('td_img5');
+var td_img6 = document.getElementById('td_img6');
+var td_img7 = document.getElementById('td_img7');
+var td_img8 = document.getElementById('td_img8');
+var td_img9 = document.getElementById('td_img9');
+var td_img10 = document.getElementById('td_img10');
+var td_img11 = document.getElementById('td_img11');
+var td_img12 = document.getElementById('td_img12');
 ////
 
 var container = document.getElementById('container');
@@ -146,7 +161,7 @@ container.style.top = (window.innerHeight)/2 - 100;
 var pic_obj = [];
 var spic_obj = [];
 
-function object(id,x,y,a,ow,oh,fw,fh) {
+function object(id,x,y,a,ow,oh,fw,fh,text) {
 	this.id = id; //picture id
 	this.x = x; //x coord
 	this.y = y; //y coord
@@ -155,6 +170,7 @@ function object(id,x,y,a,ow,oh,fw,fh) {
 	this.oh = oh; //original height
 	this.fw = fw; //final width
 	this.fh = fh; //final height
+	this.text = text;
 }
 
 //pic_obj.push(new object(1,100,100,0,100,100,100,100));
@@ -167,13 +183,22 @@ window.addEventListener("keydown",zoom_rotate);
 function drawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	for(var i=0;i<pic_obj.length;i++) {
-		if(pic_obj[i].a == 0) 
-			ctx.drawImage(document.getElementById("img"+pic_obj[i].id),pic_obj[i].x,pic_obj[i].y,pic_obj[i].fw,pic_obj[i].fh);
+		if(pic_obj[i].a == 0) {
+			if(pic_obj[i].id < 0) {
+				ctx.font= pic_obj[i].fh + "px Georgia";
+				ctx.fillText(pic_obj[i].text,pic_obj[i].x,pic_obj[i].y+pic_obj[i].fh);
+			} else
+				ctx.drawImage(document.getElementById("img"+pic_obj[i].id),pic_obj[i].x,pic_obj[i].y,pic_obj[i].fw,pic_obj[i].fh);
+		}
 		else {
 			ctx.save();
 			ctx.translate(pic_obj[i].x+pic_obj[i].fw/2,pic_obj[i].y+pic_obj[i].fh/2);
 			ctx.rotate(pic_obj[i].a*Math.PI/180);
-			ctx.drawImage(document.getElementById("img"+pic_obj[i].id),-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2,pic_obj[i].fw,pic_obj[i].fh);
+			if(pic_obj[i].id < 0) {
+				ctx.font= pic_obj[i].fh + "px Georgia";
+				ctx.fillText(pic_obj[i].text,pic_obj[i].x,pic_obj[i].y+pic_obj[i].fh);
+			} else
+				ctx.drawImage(document.getElementById("img"+pic_obj[i].id),-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2,pic_obj[i].fw,pic_obj[i].fh);
 			ctx.restore();
 		}
 	}
@@ -218,9 +243,9 @@ function finish_transform() {
 }
 
 function move_img(e) {
-	
 	if(current_img != -1 && (change_mode == -1 || change_mode == 0)) {
-		if(change_mode == -1) { 
+		if(change_mode == -1) {
+			console.log(current_img); 
 			var perX = parseInt(pic_obj[current_img].x/canvas.width*100);
 			var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
 			var cimg = current_img+1;
@@ -284,7 +309,7 @@ function findobj(e) {
 function createobj(picid) {
 	if(pauseFunctionality == false) {
 		console.log("obj created");
-		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100));
+		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
 		///////
 		csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
 		///////
@@ -295,11 +320,10 @@ function createobj(picid) {
 function drawobj(drawid) {
 	if(pauseFunctionality == false) {
 		console.log("draw created");
-		if(drawid == -2) {
-			pic_obj.push(new object(drawid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,20,0,0,0)); //20 is pixel size 
+		if(drawid == -2) { 
 			removeAllEventListeners();
 			stopImgListeners();
-			
+			container.style.display = "block";
 		}
 	}
 }
@@ -322,6 +346,11 @@ function textbox() {
 		return;
 	}
 
+	pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,con_text.value)); //20 is pixel size
+	addAllEventListeners();
+	resumeImgListeners();
+	container.style.display = "none";
+	drawcanvas();
 }
 
 function waste() {
@@ -336,20 +365,20 @@ function waste() {
 }
 
 function imageCreationListeners() {
-	dline.addEventListener("click",function(){drawobj(-1);});
-	dtbox.addEventListener("click",function(){drawobj(-2);});
-	img1.addEventListener("click",function(){createobj(1);});
-	img2.addEventListener("click",function(){createobj(2);});
-	img3.addEventListener("click",function(){createobj(3);});
-	img4.addEventListener("click",function(){createobj(4);});
-	img5.addEventListener("click",function(){createobj(5);});
-	img6.addEventListener("click",function(){createobj(6);});
-	img7.addEventListener("click",function(){createobj(7);});
-	img8.addEventListener("click",function(){createobj(8);});
-	img9.addEventListener("click",function(){createobj(9);});
-	img10.addEventListener("click",function(){createobj(10);});
-	img11.addEventListener("click",function(){createobj(11);});
-	img12.addEventListener("click",function(){createobj(12);});
+	td_dline.addEventListener("click",function(){drawobj(-1);});
+	td_dtbox.addEventListener("click",function(){drawobj(-2);});
+	td_img1.addEventListener("click",function(){createobj(1);});
+	td_img2.addEventListener("click",function(){createobj(2);});
+	td_img3.addEventListener("click",function(){createobj(3);});
+	td_img4.addEventListener("click",function(){createobj(4);});
+	td_img5.addEventListener("click",function(){createobj(5);});
+	td_img6.addEventListener("click",function(){createobj(6);});
+	td_img7.addEventListener("click",function(){createobj(7);});
+	td_img8.addEventListener("click",function(){createobj(8);});
+	td_img9.addEventListener("click",function(){createobj(9);});
+	td_img10.addEventListener("click",function(){createobj(10);});
+	td_img11.addEventListener("click",function(){createobj(11);});
+	td_img12.addEventListener("click",function(){createobj(12);});
 }
 
 function addAllEventListeners() {
