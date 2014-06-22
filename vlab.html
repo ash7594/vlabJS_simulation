@@ -52,7 +52,10 @@ td {
 	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 	<button value="Done" onclick="textbox();">Done</button>
  	<BR><BR>
-	<input id="con_text" type="text" size="25" value="" autofocus />
+	<input id="con_text" type="text" size="25" value="" autofocus /><BR><BR>
+	<font color="red">Added Information? (y/n):</font>
+	<BR><BR>
+	<input id="con_info" type="text" size="25" maxlength="1" value="" />
 </div>	
 
 <button onclick="genCSV();">Genarate CSV</button>
@@ -134,6 +137,7 @@ var td_img12 = document.getElementById('td_img12');
 
 var container = document.getElementById('container');
 var con_text = document.getElementById('con_text');
+var con_info = document.getElementById('con_info');
 var picTable = document.getElementById('pics');
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -207,12 +211,22 @@ function drawcanvas() {
 function sdrawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	for(var i=0;i<spic_obj.length;i++) {
-		if(spic_obj[i].a == 0) 
-			ctx.drawImage(document.getElementById("img"+spic_obj[i].id),spic_obj[i].x,spic_obj[i].y,spic_obj[i].fw,spic_obj[i].fh);
+		if(spic_obj[i].a == 0) {
+			if(spic_obj[i].id < 0) {
+				ctx.font= spic_obj[i].fh + "px Georgia";
+				ctx.fillText(spic_obj[i].text,spic_obj[i].x,spic_obj[i].y+spic_obj[i].fh);
+			} else
+				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),spic_obj[i].x,spic_obj[i].y,spic_obj[i].fw,spic_obj[i].fh);
+		}
 		else {
 			ctx.save();
 			ctx.translate(spic_obj[i].x+spic_obj[i].fw/2,spic_obj[i].y+spic_obj[i].fh/2);
 			ctx.rotate(spic_obj[i].a*Math.PI/180);
+			if(spic_obj[i].id < 0) {
+				ctx.font= spic_obj[i].fh + "px Georgia";
+				ctx.fillText(spic_obj[i].text,-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2+spic_obj[i].fh);
+			} else
+				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2,spic_obj[i].fw,spic_obj[i].fh);
 			ctx.drawImage(document.getElementById("img"+spic_obj[i].id),-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2,spic_obj[i].fw,spic_obj[i].fh);
 			ctx.restore();
 		}
@@ -337,7 +351,7 @@ function resumeImgListeners() {
 }
 
 function textbox() {
-	if(con_text.value == "") {
+	if(con_text.value == "" || con_info.value == "") {
 		alert("Cannot Be Empty");
 		return;
 	}
@@ -345,8 +359,13 @@ function textbox() {
 		alert("The character ',' is not allowed");
 		return;
 	}
+	if(con_info.value != 'y' && con_info.value != 'n') {
+		alert("Only (y/n) allowed");
+		return;
+	}
 
 	pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,con_text.value)); //20 is pixel size
+	csvString += "t,-2," + pic_obj.length + "," + con_text.value + ",20," + con_info.value + "\n";
 	addAllEventListeners();
 	resumeImgListeners();
 	container.style.display = "none";
@@ -365,7 +384,7 @@ function waste() {
 }
 
 function imageCreationListeners() {
-	td_dline.addEventListener("click",function(){drawobj(-1);});
+	td_dline.addEventListener("click",function(){drawobj(-3);});
 	td_dtbox.addEventListener("click",function(){drawobj(-2);});
 	td_img1.addEventListener("click",function(){createobj(1);});
 	td_img2.addEventListener("click",function(){createobj(2);});
@@ -417,7 +436,10 @@ function simulate(mode,imgIn) {
 		document.getElementById("csvDisplay").innerHTML += csv[ci] + "<BR>";
 		if(csv[ci][0] == 'a') {
 			var items = csv[ci].split(",");
-			spic_obj.push(new object(parseInt(items[1])+1,100,100,0,100,100,100,100));
+			spic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
+		} else if(csv[ci][0] == 't') {
+			var items = csv[ci].split(",");
+			spic_obj.push(new object(parseInt(items[1]),parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[3]));
 		} else if(csv[ci][0] == 'm') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;	
