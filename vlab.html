@@ -196,7 +196,7 @@ function drawcanvas() {
 			ctx.rotate(pic_obj[i].a*Math.PI/180);
 			if(pic_obj[i].id < 0) {
 				ctx.font= pic_obj[i].fh + "px Georgia";
-				ctx.fillText(pic_obj[i].text,pic_obj[i].x,pic_obj[i].y+pic_obj[i].fh);
+				ctx.fillText(pic_obj[i].text,-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2+pic_obj[i].fh);
 			} else
 				ctx.drawImage(document.getElementById("img"+pic_obj[i].id),-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2,pic_obj[i].fw,pic_obj[i].fh);
 			ctx.restore();
