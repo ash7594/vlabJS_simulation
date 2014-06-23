@@ -59,7 +59,7 @@ td {
 </div>
 
 <center>
-<font id="message" size="30"></font>
+<font id="message" style="font-size: 30px" color="#0000FF">Begin by clicking an object</font>
 </center>
 
 <button id="gencsv">Genarate CSV</button>
@@ -149,6 +149,7 @@ var stepsim = document.getElementById('stepsim');
 var nextsim = document.getElementById('nextsim');
 var endstep = document.getElementById('endstep');
 ////
+var message = document.getElementById('message');
 comsim.style.position = "absolute";
 stepsim.style.position = "absolute";
 gencsv.style.position = "absolute";
@@ -372,6 +373,8 @@ function drawobj(drawid) {
 		if(drawid == -2) { 
 			removeAllEventListeners();
 			stopImgListeners();
+			con_text.value = "";
+			con_info.value = "";
 			container.style.display = "block";
 		}
 	}
