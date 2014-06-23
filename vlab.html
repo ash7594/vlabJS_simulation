@@ -58,9 +58,13 @@ td {
 	<input id="con_info" type="text" size="25" maxlength="1" value="" />
 </div>	
 
-<button onclick="genCSV();">Genarate CSV</button>
-<button onclick="loadCSV();">Load CSV</button>
-<button onclick="pre_simulate();">Simulate</button>
+<button id="gencsv">Genarate CSV</button>
+<button id="loadcsv">Load CSV</button>
+<button id="comsim">Complete Simulation</button>
+<button id="stepsim">Step Simulation</button>
+<button id="nextsim" style="display: none">Next Step</button>
+<button id="endstep" style="display: none">End Simulation</button>
+
 <div id="pics">
 <font id="csvDisplay" color="#FF0000" style="display: none"></font>
 <table id="picTable" width="200" border="2">
@@ -134,6 +138,13 @@ var td_img10 = document.getElementById('td_img10');
 var td_img11 = document.getElementById('td_img11');
 var td_img12 = document.getElementById('td_img12');
 ////
+var gencsv = document.getElementById('gencsv');
+var loadcsv = document.getElementById('loadcsv');
+var comsim = document.getElementById('comsim');
+var stepsim = document.getElementById('stepsim');
+var nextsim = document.getElementById('nextsim');
+var endstep = document.getElementById('endstep');
+////
 
 var container = document.getElementById('container');
 var con_text = document.getElementById('con_text');
@@ -165,6 +176,12 @@ container.style.top = (window.innerHeight)/2 - 100;
 var pic_obj = [];
 var spic_obj = [];
 
+var simtym;
+var csv,ci;
+var sr,ss;
+var sx,sy,sd;
+var isComSim = 1;
+
 function object(id,x,y,a,ow,oh,fw,fh,text) {
 	this.id = id; //picture id
 	this.x = x; //x coord
@@ -178,11 +195,13 @@ function object(id,x,y,a,ow,oh,fw,fh,text) {
 }
 
 //pic_obj.push(new object(1,100,100,0,100,100,100,100));
+nextsim.addEventListener("click");
+endstep.addEventListener("click");
 
-canvas.addEventListener("mousemove",move_img);
+/*canvas.addEventListener("mousemove",move_img);
 canvas.addEventListener("mousedown",findobj);
 canvas.addEventListener("mouseup",finish_transform);
-window.addEventListener("keydown",zoom_rotate);
+window.addEventListener("keydown",zoom_rotate);*/
 
 function drawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -227,7 +246,6 @@ function sdrawcanvas() {
 				ctx.fillText(spic_obj[i].text,-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2+spic_obj[i].fh);
 			} else
 				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2,spic_obj[i].fw,spic_obj[i].fh);
-			ctx.drawImage(document.getElementById("img"+spic_obj[i].id),-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2,spic_obj[i].fw,spic_obj[i].fh);
 			ctx.restore();
 		}
 	}
@@ -401,6 +419,11 @@ function imageCreationListeners() {
 }
 
 function addAllEventListeners() {
+	gencsv.addEventListener("click",genCSV;
+	loadcsv.addEventListener("click",loadCSV);
+	comsim.addEventListener("click",pre_simulate);
+	stepsim.addEventListener("click",startStepSim);
+
 	canvas.addEventListener("mousemove",move_img);
 	canvas.addEventListener("mousedown",findobj);
 	canvas.addEventListener("mouseup",finish_transform);
@@ -408,16 +431,27 @@ function addAllEventListeners() {
 }
 
 function removeAllEventListeners() {
+	gencsv.removeEventListener("click",genCSV;
+	loadcsv.removeEventListener("click",loadCSV);
+	comsim.removeEventListener("click",pre_simulate);
+	stepsim.removeEventListener("click",startStepSim);
+
 	canvas.removeEventListener("mousemove",move_img);
 	canvas.removeEventListener("mousedown",findobj);
 	canvas.removeEventListener("mouseup",finish_transform);
 	window.removeEventListener("keydown",zoom_rotate);
 }
 
-var simtym;
-var csv,ci;
-var sr,ss;
-var sx,sy,sd;
+function startStepSim() {
+	gencsv.style.display = "none";
+	loadcsv.style.display = "none";
+	comsim.style.display = "none";
+	stepsim.style.display = "none";
+	nextsim.style.display = "block";
+	endstep.style.display = "block";
+	isComSim = 0;
+	pre_simulate();
+}
 
 function pre_simulate() {
 	removeAllEventListeners();
@@ -433,7 +467,7 @@ function pre_simulate() {
 function simulate(mode,imgIn) {
 	//ctx.clearRect(0,0,canvas.width,canvas.height);
 	if(mode == 0) {
-		document.getElementById("csvDisplay").innerHTML += csv[ci] + "<BR>";
+		document.getElementById("csvDisplay").innerHTML += (ci+1) + ". " + csv[ci] + "<BR>";
 		if(csv[ci][0] == 'a') {
 			var items = csv[ci].split(",");
 			spic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
@@ -518,7 +552,10 @@ function simulate(mode,imgIn) {
 	}
 
 	sdrawcanvas();
-	if(ci!=(csv.length-1)) {
+	if(mode==0 && isComSim==0 && ci!=(csv.length-1)) {
+		return;
+	}
+	else if(ci!=(csv.length-1)) {
 		if(mode == 0)
 			simtym = setTimeout(function(){simulate(mode,imgIn);},100);
 		else
@@ -529,6 +566,13 @@ function simulate(mode,imgIn) {
 		document.getElementById("csvDisplay").style.display = "none";
 		document.getElementById("picTable").style.display = "block";
 		addAllEventListeners();
+		gencsv.style.display = "block";
+		loadcsv.style.display = "block";
+		comsim.style.display = "block";
+		stepsim.style.display = "block";
+		nextsim.style.display = "none";
+		endstep.style.display = "none";
+		isComSim = 1;
 		clearTimeout(simtym);
 	}
 }
