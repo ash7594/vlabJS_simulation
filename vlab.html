@@ -248,7 +248,11 @@ window.addEventListener("keydown",zoom_rotate);*/
 function check_student() {
 	if(pic_obj[current_img].x > (spic_obj[current_img].x-10) && pic_obj[current_img].x < (spic_obj[current_img].x+10) && pic_obj[current_img].y > (spic_obj[current_img].y-10) && pic_obj[current_img].y < (spic_obj[current_img].y+10)) {
 		if(pic_obj[current_img].a > (spic_obj[current_img].a-10) && pic_obj[current_img].a < (spic_obj[current_img].a+10)) {
-			return 1;
+			if(pic_obj[current_img].fw > (spic_obj[current_img].fw-10) && pic_obj[current_img].fw < (spic_obj[current_img].fw+10)) {
+				if(pic_obj[current_img].fh > (spic_obj[current_img].fh-10) && pic_obj[current_img].fh < (spic_obj[current_img].fh+10)) {
+					return 1;
+				}
+			}
 		}
 	} else {
 		return 0;
@@ -327,15 +331,35 @@ function finish_transform() {
 		}
 	}
 
-	else if(change_mode == 1) {
+	else if(change_mode == 1 && isGhost!=1) {
 		var scaling = parseInt(pic_obj[current_img].fh/canvas.height*100);
 		var cimg = current_img+1;
 		pic_obj[current_img].fh = parseInt(scaling*canvas.height/100);
 		pic_obj[current_img].fw = parseInt(pic_obj[current_img].fh*pic_obj[current_img].ow/pic_obj[current_img].oh);
 		csvString += "s," + cimg + "," + scaling + "\n";
-	} else if(change_mode == 2) {
+	} else if(change_mode == 1 && isGhost==1) {
+		if(check_student()==1) {
+			pic_obj[current_img].fw = spic_obj[current_img].fw;
+			pic_obj[current_img].fh = spic_obj[current_img].fh;
+			ci2+=2;
+			simulate(0,0);
+		} else {
+			pic_obj[current_img].fw = ghost_cw;
+			pic_obj[current_img].fh = ghost_ch;
+		}
+	}
+
+	else if(change_mode == 2 && isGhost!=1) {
 		var cimg = current_img+1;
 		csvString += "r," + cimg + "," + pic_obj[current_img].a + "\n";
+	} else if(change_mode == 2 && isGhost==1) {
+		if(check_student()==1) {
+			pic_obj[current_img].a = spic_obj[current_img].a;
+			ci2+=2;
+			simulate(0,0);
+		} else {
+			pic_obj[current_img].a = ghost_ca;
+		}
 	}
 
 	current_img = -1;
@@ -398,7 +422,8 @@ function zoom_rotate(e) {
 			if(pic_obj[current_img].a < 0)
 				pic_obj[current_img].a += 360;
 		}
-
+	if(isGhost==1)
+		sdrawcanvas();	
 	drawcanvas();
 	}
 }
