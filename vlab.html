@@ -217,7 +217,12 @@ var isComSim = 1;
 var isGhost = 0;
 var csv2;
 var ci2;
-var ghost_cx,ghost_cy;
+var ghost_cx;
+var ghost_cy;
+var ghost_ca;
+var ghost_cw;
+var ghost_ch;
+var ghostIn;
 
 function object(id,x,y,a,ow,oh,fw,fh,text) {
 	this.id = id; //picture id
@@ -239,6 +244,16 @@ endstep.addEventListener("click",endStepSim);
 canvas.addEventListener("mousedown",findobj);
 canvas.addEventListener("mouseup",finish_transform);
 window.addEventListener("keydown",zoom_rotate);*/
+
+function check_student() {
+	if(pic_obj[current_img].x > (spic_obj[current_img].x-10) && pic_obj[current_img].x < (spic_obj[current_img].x+10) && pic_obj[current_img].y > (spic_obj[current_img].y-10) && pic_obj[current_img].y < (spic_obj[current_img].y+10)) {
+		if(pic_obj[current_img].a > (spic_obj[current_img].a-10) && pic_obj[current_img].a < (spic_obj[current_img].a+10)) {
+			return 1;
+		}
+	} else {
+		return 0;
+	}
+}
 
 function drawcanvas() {
 	if(isGhost != 1)
@@ -301,7 +316,7 @@ function finish_transform() {
 		pic_obj[current_img].y = parseInt(perY*canvas.height/100);
 		csvString += perX + "," + perY + "\n";	
 	} else if(change_mode == 0 && isGhost==1) {
-		if(pic_obj[current_img].x > (spic_obj[current_img].x-10) && pic_obj[current_img].x < (spic_obj[current_img].x+10) && pic_obj[current_img].y > (spic_obj[current_img].y-10) && pic_obj[current_img].y < (spic_obj[current_img].y+10)) {
+		if(check_student()==1) {
 			pic_obj[current_img].x = spic_obj[current_img].x;
 			pic_obj[current_img].y = spic_obj[current_img].y;
 			ci2+=2;
@@ -338,9 +353,6 @@ function move_img(e) {
 			var perY = parseInt(pic_obj[current_img].y/canvas.height*100);
 			var cimg = current_img+1;
 			csvString += "m," + cimg + "," + perX + "," + perY + ",";
-		} else if(change_mode == -1 && isGhost==1) {
-			ghost_cx = pic_obj[current_img].x;
-			ghost_cy = pic_obj[current_img].y;
 		}
 		///////////
 		change_mode = 0;
@@ -621,6 +633,7 @@ function simulate(mode,imgIn) {
 		} else {
 			spic_obj[imgIn].x = sx;
 			spic_obj[imgIn].y = sy;
+			ghostIn = imgIn;
 			mode = 0;
 			imgIn = 0;
 			ci++;
@@ -645,6 +658,7 @@ function simulate(mode,imgIn) {
 				spic_obj[imgIn].fw -= 2;
 			}	
 		} else {
+			ghostIn = imgIn;
 			mode = 0;
 			imgIn = 0;
 			ci++;
@@ -655,6 +669,7 @@ function simulate(mode,imgIn) {
 		else if(spic_obj[imgIn].a>sr) 
 			spic_obj[imgIn].a -= 2;
 		else {
+			ghostIn = imgIn;
 			mode = 0;
 			imgIn = 0;
 			ci++;
@@ -671,6 +686,12 @@ function simulate(mode,imgIn) {
 				sdrawcanvas();
 				drawcanvas();
 			}
+			ghost_cx = pic_obj[ghostIn].x;
+			ghost_cy = pic_obj[ghostIn].y;
+			ghost_ca = pic_obj[ghostIn].a;
+			ghost_cw = pic_obj[ghostIn].fw;
+			ghost_ch = pic_obj[ghostIn].fh;
+
 			canvas.addEventListener("mousemove",move_img);
 			canvas.addEventListener("mousedown",findobj);
 			canvas.addEventListener("mouseup",finish_transform);
