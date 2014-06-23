@@ -195,8 +195,8 @@ function object(id,x,y,a,ow,oh,fw,fh,text) {
 }
 
 //pic_obj.push(new object(1,100,100,0,100,100,100,100));
-nextsim.addEventListener("click");
-endstep.addEventListener("click");
+nextsim.addEventListener("click",nextStepSim);
+endstep.addEventListener("click",endStepSim);
 
 /*canvas.addEventListener("mousemove",move_img);
 canvas.addEventListener("mousedown",findobj);
@@ -419,7 +419,7 @@ function imageCreationListeners() {
 }
 
 function addAllEventListeners() {
-	gencsv.addEventListener("click",genCSV;
+	gencsv.addEventListener("click",genCSV);
 	loadcsv.addEventListener("click",loadCSV);
 	comsim.addEventListener("click",pre_simulate);
 	stepsim.addEventListener("click",startStepSim);
@@ -431,7 +431,7 @@ function addAllEventListeners() {
 }
 
 function removeAllEventListeners() {
-	gencsv.removeEventListener("click",genCSV;
+	gencsv.removeEventListener("click",genCSV);
 	loadcsv.removeEventListener("click",loadCSV);
 	comsim.removeEventListener("click",pre_simulate);
 	stepsim.removeEventListener("click",startStepSim);
@@ -442,26 +442,52 @@ function removeAllEventListeners() {
 	window.removeEventListener("keydown",zoom_rotate);
 }
 
+function nextStepSim() {
+	if(ci!=(csv.length-1))
+		simulate(0,0);
+}
+
+function endStepSim() {
+	console.log("simulation done");
+	drawcanvas();
+	document.getElementById("csvDisplay").style.display = "none";
+	document.getElementById("picTable").style.display = "block";
+	addAllEventListeners();
+	nextsim.style.display = "none";
+	endstep.style.display = "none";
+	gencsv.style.display = "block";
+	loadcsv.style.display = "block";
+	comsim.style.display = "block";
+	stepsim.style.display = "block";
+	isComSim = 1;
+	ci = 0;
+	clearTimeout(simtym);
+}
+
 function startStepSim() {
-	gencsv.style.display = "none";
-	loadcsv.style.display = "none";
-	comsim.style.display = "none";
-	stepsim.style.display = "none";
-	nextsim.style.display = "block";
-	endstep.style.display = "block";
-	isComSim = 0;
-	pre_simulate();
+	if(csvString != "") {
+		gencsv.style.display = "none";
+		loadcsv.style.display = "none";
+		comsim.style.display = "none";
+		stepsim.style.display = "none";
+		nextsim.style.display = "block";
+		endstep.style.display = "block";
+		isComSim = 0;
+		pre_simulate();
+	}
 }
 
 function pre_simulate() {
-	removeAllEventListeners();
-	document.getElementById("picTable").style.display = "none";
-	document.getElementById("csvDisplay").style.display = "block";
-	document.getElementById("csvDisplay").innerHTML = "";
-	spic_obj = [];
-	ci = 0;
-	csv = csvString.split("\n");
-	simulate(0,0);
+	if(csvString != "") {
+		removeAllEventListeners();
+		document.getElementById("picTable").style.display = "none";
+		document.getElementById("csvDisplay").style.display = "block";
+		document.getElementById("csvDisplay").innerHTML = "";
+		spic_obj = [];
+		ci = 0;
+		csv = csvString.split("\n");
+		simulate(0,0);
+	}
 } 
 
 function simulate(mode,imgIn) {
@@ -552,7 +578,7 @@ function simulate(mode,imgIn) {
 	}
 
 	sdrawcanvas();
-	if(mode==0 && isComSim==0 && ci!=(csv.length-1)) {
+	if(mode==0 && isComSim==0) {
 		return;
 	}
 	else if(ci!=(csv.length-1)) {
@@ -566,12 +592,12 @@ function simulate(mode,imgIn) {
 		document.getElementById("csvDisplay").style.display = "none";
 		document.getElementById("picTable").style.display = "block";
 		addAllEventListeners();
+		nextsim.style.display = "none";
+		endstep.style.display = "none";
 		gencsv.style.display = "block";
 		loadcsv.style.display = "block";
 		comsim.style.display = "block";
 		stepsim.style.display = "block";
-		nextsim.style.display = "none";
-		endstep.style.display = "none";
 		isComSim = 1;
 		clearTimeout(simtym);
 	}
