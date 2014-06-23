@@ -239,6 +239,7 @@ function object(id,x,y,a,ow,oh,fw,fh,text) {
 //pic_obj.push(new object(1,100,100,0,100,100,100,100));
 nextsim.addEventListener("click",nextStepSim);
 endstep.addEventListener("click",endStepSim);
+end_ghost.addEventListener("click",endGhostMode);
 
 /*canvas.addEventListener("mousemove",move_img);
 canvas.addEventListener("mousedown",findobj);
@@ -324,7 +325,10 @@ function finish_transform() {
 			pic_obj[current_img].x = spic_obj[current_img].x;
 			pic_obj[current_img].y = spic_obj[current_img].y;
 			ci2+=2;
-			simulate(0,0);
+			if(ci2<csv2.length)
+				simulate(0,0);
+			else
+				endGhostMode();
 		} else {
 			pic_obj[current_img].x = ghost_cx;
 			pic_obj[current_img].y = ghost_cy;
@@ -342,7 +346,10 @@ function finish_transform() {
 			pic_obj[current_img].fw = spic_obj[current_img].fw;
 			pic_obj[current_img].fh = spic_obj[current_img].fh;
 			ci2+=2;
-			simulate(0,0);
+			if(ci2<csv2.length)
+				simulate(0,0);
+			else
+				endGhostMode();
 		} else {
 			pic_obj[current_img].fw = ghost_cw;
 			pic_obj[current_img].fh = ghost_ch;
@@ -356,7 +363,10 @@ function finish_transform() {
 		if(check_student()==1) {
 			pic_obj[current_img].a = spic_obj[current_img].a;
 			ci2+=2;
-			simulate(0,0);
+			if(ci2<csv2.length)
+				simulate(0,0);
+			else
+				endGhostMode();
 		} else {
 			pic_obj[current_img].a = ghost_ca;
 		}
@@ -578,6 +588,11 @@ function ghostmode() {
 		pre_startGhost();
 		pre_simulate();
 	}
+}
+
+function endGhostMode() {
+	isGhost = 0;
+	removeAllEventListeners();
 }
 
 function pre_startGhost() {
