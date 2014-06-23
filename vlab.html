@@ -56,7 +56,11 @@ td {
 	<font color="red">Added Information? (y/n):</font>
 	<BR><BR>
 	<input id="con_info" type="text" size="25" maxlength="1" value="" />
-</div>	
+</div>
+
+<center>
+<font id="message" size="30"></font>
+</center>
 
 <button id="gencsv">Genarate CSV</button>
 <button id="loadcsv">Load CSV</button>
@@ -145,6 +149,19 @@ var stepsim = document.getElementById('stepsim');
 var nextsim = document.getElementById('nextsim');
 var endstep = document.getElementById('endstep');
 ////
+comsim.style.position = "absolute";
+stepsim.style.position = "absolute";
+gencsv.style.position = "absolute";
+loadcsv.style.position = "absolute";
+
+comsim.style.left = 0;
+comsim.style.top = 0;
+stepsim.style.left = 0;
+stepsim.style.top = 20;
+gencsv.style.left = window.innerWidth - 90;
+gencsv.style.top = 0;
+loadcsv.style.left = window.innerWidth - 65;
+loadcsv.style.top = 20;
 
 var container = document.getElementById('container');
 var con_text = document.getElementById('con_text');
