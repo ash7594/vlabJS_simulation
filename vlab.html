@@ -59,7 +59,7 @@ td {
 </div>
 
 <center>
-<font id="message" style="font-size: 30px" color="#0000FF">Begin by clicking an object</font>
+<font id="message" style="font-size: 20px" color="#0000FF">Begin by clicking an object</font>
 </center>
 
 <button id="gencsv">Genarate CSV</button>
@@ -359,6 +359,7 @@ function findobj(e) {
 function createobj(picid) {
 	if(pauseFunctionality == false) {
 		console.log("obj created");
+		message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
 		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
 		///////
 		csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
@@ -370,7 +371,8 @@ function createobj(picid) {
 function drawobj(drawid) {
 	if(pauseFunctionality == false) {
 		console.log("draw created");
-		if(drawid == -2) { 
+		if(drawid == -2) {
+			message.innerHTML = "Fill details about the text";
 			removeAllEventListeners();
 			stopImgListeners();
 			con_text.value = "";
@@ -401,7 +403,7 @@ function textbox() {
 		alert("Only (y/n) allowed");
 		return;
 	}
-
+	message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
 	pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,con_text.value)); //20 is pixel size
 	csvString += "t,-2," + pic_obj.length + "," + con_text.value + ",20," + con_info.value + "\n";
 	addAllEventListeners();
