@@ -324,8 +324,8 @@ function finish_transform() {
 		if(check_student()==1) {
 			pic_obj[current_img].x = spic_obj[current_img].x;
 			pic_obj[current_img].y = spic_obj[current_img].y;
-			ci2+=2;
-			if(ci2<csv2.length)
+			ci2+=1;
+			if(ci2<csv2.length-1)
 				simulate(0,0);
 			else
 				endGhostMode();
@@ -345,8 +345,8 @@ function finish_transform() {
 		if(check_student()==1) {
 			pic_obj[current_img].fw = spic_obj[current_img].fw;
 			pic_obj[current_img].fh = spic_obj[current_img].fh;
-			ci2+=2;
-			if(ci2<csv2.length)
+			ci2+=1;
+			if(ci2<csv2.length-1)
 				simulate(0,0);
 			else
 				endGhostMode();
@@ -362,8 +362,8 @@ function finish_transform() {
 	} else if(change_mode == 2 && isGhost==1) {
 		if(check_student()==1) {
 			pic_obj[current_img].a = spic_obj[current_img].a;
-			ci2+=2;
-			if(ci2<csv2.length)
+			ci2+=1;
+			if(ci2<csv2.length-1)
 				simulate(0,0);
 			else
 				endGhostMode();
@@ -723,6 +723,7 @@ function simulate(mode,imgIn) {
 			if(csv2[ci2][0] == 'a') {
 				var items = csv2[ci2].split(",");
 				pic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
+				ci2++;
 				sdrawcanvas();
 				drawcanvas();
 			}
