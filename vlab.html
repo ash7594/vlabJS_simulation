@@ -224,7 +224,7 @@ var ghost_cw;
 var ghost_ch;
 var ghostIn;
 
-function object(id,x,y,a,ow,oh,fw,fh,text) {
+function object(id,x,y,a,ow,oh,fw,fh,q,text) {
 	this.id = id; //picture id
 	this.x = x; //x coord
 	this.y = y; //y coord
@@ -233,6 +233,7 @@ function object(id,x,y,a,ow,oh,fw,fh,text) {
 	this.oh = oh; //original height
 	this.fw = fw; //final width
 	this.fh = fh; //final height
+	this.q = q;
 	this.text = text;
 }
 
@@ -450,7 +451,7 @@ function createobj(picid) {
 	if(pauseFunctionality == false) {
 		console.log("obj created");
 		message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
-		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
+		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
 		///////
 		csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
 		///////
@@ -494,8 +495,8 @@ function textbox() {
 		return;
 	}
 	message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
-	pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,con_text.value)); //20 is pixel size
-	csvString += "t,-2," + pic_obj.length + "," + con_text.value + ",20," + con_info.value + "\n";
+	pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,con_info.value,con_text.value)); //20 is pixel size
+	csvString += "t," + pic_obj.length + "," + con_info.value + "," + con_text.value + "\n";
 	addAllEventListeners();
 	resumeImgListeners();
 	container.style.display = "none";
@@ -634,20 +635,21 @@ function simulate(mode,imgIn) {
 		document.getElementById("csvDisplay").innerHTML += (ci+1) + ". " + csv[ci] + "<BR>";
 		if(csv[ci][0] == 'a') {
 			var items = csv[ci].split(",");
-			spic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
+			spic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
 		} else if(csv[ci][0] == 't') {
 			var items = csv[ci].split(",");
-			spic_obj.push(new object(parseInt(items[1]),parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[3]));
+			spic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
 		} else if(csv[ci][0] == 'm') {
 			var items = csv[ci].split(",");
-			imgIn = parseInt(items[1])-1;	
+			imgIn = parseInt(items[1])-1;
 			mode = 1;
 			sx = parseInt(parseInt(items[4])*canvas.width/100);
 			sy = parseInt(parseInt(items[5])*canvas.height/100);
 			sd = Math.abs(Math.atan((spic_obj[imgIn].y-sy)/(spic_obj[imgIn].x-sx)));
+			console.log("sd: "+(sd*180/Math.PI));
 		} else if(csv[ci][0] == 's') {
 			var items = csv[ci].split(",");
-			imgIn = parseInt(items[1])-1;	
+			imgIn = parseInt(items[1])-1;
 			mode = 2;
 			ss = parseInt(parseInt(items[2])*canvas.height/100);
 		} else if(csv[ci][0] == 'r') {
@@ -722,7 +724,7 @@ function simulate(mode,imgIn) {
 		if(mode == 0 && (csv[ci-1][0] == 'm' || csv[ci-1][0] == 's' || csv[ci-1][0] == 'r')) {
 			if(csv2[ci2][0] == 'a') {
 				var items = csv2[ci2].split(",");
-				pic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,""));
+				pic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
 				ci2++;
 				sdrawcanvas();
 				drawcanvas();
