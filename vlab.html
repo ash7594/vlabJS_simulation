@@ -43,6 +43,12 @@ td {
 	background-color: #222222;
 }
 
+#container2{
+	padding: 25px;
+	z-index: 1000;
+	background-color: #222222;
+}
+
 </style>
 
 <body>
@@ -56,6 +62,13 @@ td {
 	<font color="red">Any question attached?<BR>(optional):</font>
 	<BR><BR>
 	<input id="con_info" type="text" size="25" value="" />
+</div>
+
+<div id="container2" style="display: none">
+	<font id="ques" color="red"></font>
+ 	<BR><BR>
+	<input id="con_text2" type="text" size="25" value="" autofocus /><BR><BR>
+	<button value="Done" onclick="textbox2();">Done</button>
 </div>
 
 <center>
@@ -180,7 +193,9 @@ loadcsv.style.left = window.innerWidth - 65;
 loadcsv.style.top = 20;
 
 var container = document.getElementById('container');
+var container2 = document.getElementById('container2');
 var con_text = document.getElementById('con_text');
+var con_text2 = document.getElementById('con_text2');
 var con_info = document.getElementById('con_info');
 var picTable = document.getElementById('pics');
 var canvas = document.getElementById('canvas');
@@ -205,6 +220,10 @@ picTable.style.top = offsetY;
 container.style.position = "absolute";
 container.style.left = (window.innerWidth - 250)/2;
 container.style.top = (window.innerHeight)/2 - 100;
+
+container2.style.position = "absolute";
+container2.style.left = (window.innerWidth - 250)/2;
+container2.style.top = (window.innerHeight)/2 - 100;
 
 var pic_obj = [];
 var spic_obj = [];
@@ -500,6 +519,19 @@ function textbox() {
 	drawcanvas();
 }
 
+function textbox2() {
+	if(con_text2.value == pic_obj[pic_obj.length - 1].text) {
+		container2.style.display = "none";
+		ci2++;
+		sdrawcanvas();
+		if(isGhost == 1)
+			drawcanvas();
+		simulate(0,0);
+	} else {
+		message.innerHTML = "Wrong value inserted...Try again!";
+	}
+}
+
 function waste() {
 	//ctx.clearRect(0,0,canvas.width,canvas.height);
 	ctx.drawImage(img1,canvas.width - 110,0,100,100);
@@ -635,7 +667,14 @@ function simulate(mode,imgIn) {
 			spic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
 		} else if(csv[ci][0] == 't') {
 			var items = csv[ci].split(",");
-			spic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+			//if(items[2] != "" && isGhost == 1) {
+			//	document.getElementById('ques').innerHTML = items[2];
+			//	spic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+			//	container2.style.display = "block";
+			//	return;
+			//} else {
+				spic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+			//}
 		} else if(csv[ci][0] == 'm') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;
@@ -651,7 +690,7 @@ function simulate(mode,imgIn) {
 			ss = parseInt(parseInt(items[2])*canvas.height/100);
 		} else if(csv[ci][0] == 'r') {
 			var items = csv[ci].split(",");
-			imgIn = parseInt(items[1])-1;	
+			imgIn = parseInt(items[1])-1;
 			mode = 3;
 			sr = parseInt(items[2]);
 		}
@@ -718,16 +757,33 @@ function simulate(mode,imgIn) {
 	}
 
 	if(isGhost == 1) {
-		if(mode == 0 && (csv[ci-1][0] == 'm' || csv[ci-1][0] == 's' || csv[ci-1][0] == 'r')) {
-			while(ci2<(ci-1)) {
+		if(mode == 0 && (csv[ci-1][0] == 'm' || csv[ci-1][0] == 's' || csv[ci-1][0] == 'r' || csv[ci-1][0] == 't')) {
+			while(ci2<(ci)) {
 				if(csv2[ci2][0] == 'a') {
 					var items = csv2[ci2].split(",");
 					pic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
 					ci2++;
 					sdrawcanvas();
 					drawcanvas();
+				} else if(csv2[ci2][0] == 't') {
+
+					var items = csv2[ci2].split(",");
+					if(items[2] == "") {
+						pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+					} else {
+						pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+						document.getElementById('ques').innerHTML = items[2];
+						container2.style.display = "block";
+						return;
+					}
+					ci2++;
+					sdrawcanvas();
+					drawcanvas();
+				} else {
+					break;
 				}
 			}
+				
 			ghost_cx = pic_obj[ghostIn].x;
 			ghost_cy = pic_obj[ghostIn].y;
 			ghost_ca = pic_obj[ghostIn].a;
