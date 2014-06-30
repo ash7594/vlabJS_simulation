@@ -333,7 +333,12 @@ function sdrawcanvas() {
 				ctx.font= spic_obj[i].fh + "px Georgia";
 				ctx.fillText(spic_obj[i].text,spic_obj[i].x,spic_obj[i].y+spic_obj[i].fh);
 			} else if(spic_obj[i].id == -3) {
-
+				ctx.beginPath();
+				ctx.moveTo(spic_obj[i].x,spic_obj[i].y);
+				ctx.lineTo(spic_obj[i].fw,spic_obj[i].fh);
+				ctx.lineWidth = chosenLineWidth;
+				ctx.stroke();
+				ctx.closePath();
 			} else
 				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),spic_obj[i].x,spic_obj[i].y,spic_obj[i].fw,spic_obj[i].fh);
 		}
@@ -345,7 +350,12 @@ function sdrawcanvas() {
 				ctx.font= spic_obj[i].fh + "px Georgia";
 				ctx.fillText(spic_obj[i].text,-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2+spic_obj[i].fh);
 			} else if(spic_obj[i].id == -3) {
-
+				ctx.beginPath();
+				ctx.moveTo(spic_obj[i].x,spic_obj[i].y);
+				ctx.lineTo(spic_obj[i].fw,spic_obj[i].fh);
+				ctx.lineWidth = chosenLineWidth;
+				ctx.stroke();
+				ctx.closePath();
 			} else
 				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2,spic_obj[i].fw,spic_obj[i].fh);
 			ctx.restore();
