@@ -788,6 +788,11 @@ function simulate(mode,imgIn) {
 		} else if(csv[ci][0] == 'd') {
 			var items = csv[ci].split(",");
 			spic_obj.splice(parseInt(items[1])-1,1);
+		} else if(csv[ci][0] == 'c') {
+			var items = csv[ci].split(",");
+			var changeIndex = parseInt(items[1])-1;
+			spic_obj.push(new object(parseInt(items[2])+1,spic_obj[changeIndex].x,spic_obj[changeIndex].y,spic_obj[changeIndex].a,100,100,spic_obj[changeIndex].fw,spic_obj[changeIndex].fh,"",""));
+			spic_obj.splice(changeIndex,1);
 		} else if(csv[ci][0] == 'm') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;
@@ -887,6 +892,14 @@ function simulate(mode,imgIn) {
 				} else if(csv2[ci2][0] == 'd') {
 					var items = csv2[ci2].split(",");
 					pic_obj.splice(parseInt(items[1])-1,1);
+					ci2++;
+					sdrawcanvas();
+					drawcanvas();
+				} else if(csv2[ci2][0] == 'c') {
+					var items = csv2[ci2].split(",");
+					var changeIndex = parseInt(items[1])-1;
+					pic_obj.push(new object(parseInt(items[2])+1,pic_obj[changeIndex].x,pic_obj[changeIndex].y,pic_obj[changeIndex].a,100,100,pic_obj[changeIndex].fw,pic_obj[changeIndex].fh,"",""));
+					pic_obj.splice(changeIndex,1);
 					ci2++;
 					sdrawcanvas();
 					drawcanvas();
