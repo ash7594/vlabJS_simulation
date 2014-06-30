@@ -492,6 +492,8 @@ function zoom_rotate(e) {
 			change_mode = 3; //delete obj
 			////////////
 			pic_obj.splice(current_img,1);
+			var cimg = current_img+1;
+			csvString += "d," + cimg + "\n";
 			current_img = -1;
 		}
 	if(isGhost==1)
@@ -763,6 +765,9 @@ function simulate(mode,imgIn) {
 		} else if(csv[ci][0] == 'l') {
 			var items = csv[ci].split(",");
 			spic_obj.push(new object(-3,parseInt(items[1]*canvas.width/100),parseInt(items[2]*canvas.height/100),0,0,0,parseInt(items[3]*canvas.width/100),parseInt(items[4]*canvas.height/100),"",""));
+		} else if(csv[ci][0] == 'd') {
+			var items = csv[ci].split(",");
+			spic_obj.splice(parseInt(items[1])-1,1);
 		} else if(csv[ci][0] == 'm') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;
@@ -856,6 +861,12 @@ function simulate(mode,imgIn) {
 				} else if(csv2[ci2][0] == 'l') {
 					var items = csv2[ci2].split(",");
 					pic_obj.push(new object(-3,parseInt(items[1]*canvas.width/100),parseInt(items[2]*canvas.height/100),0,0,0,parseInt(items[3]*canvas.width/100),parseInt(items[4]*canvas.height/100),"",""));
+					ci2++;
+					sdrawcanvas();
+					drawcanvas();
+				} else if(csv2[ci2][0] == 'd') {
+					var items = csv2[ci2].split(",");
+					pic_obj.splice(parseInt(items[1])-1,1);
 					ci2++;
 					sdrawcanvas();
 					drawcanvas();
