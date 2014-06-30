@@ -424,6 +424,10 @@ function finish_transform() {
 		}
 	}
 
+	else if(change_mode == 3) {
+		message.innerHTML = "Object Deleted";
+	}
+
 	current_img = -1;
 	change_mode = -1;
 	if(isGhost == 1)
@@ -455,7 +459,7 @@ function move_img(e) {
 }
 
 function zoom_rotate(e) {
-	//console.log(e.keyCode);
+	console.log(e.keyCode);
 	if(current_img != -1) {
 		if(e.keyCode == 107 && (change_mode == -1 || change_mode == 1)) {
 			////////////
@@ -483,6 +487,12 @@ function zoom_rotate(e) {
 			pic_obj[current_img].a -= 2;
 			if(pic_obj[current_img].a < 0)
 				pic_obj[current_img].a += 360;
+		} else if(e.keyCode == 46) {
+			////////////
+			change_mode = 3; //delete obj
+			////////////
+			pic_obj.splice(current_img,1);
+			current_img = -1;
 		}
 	if(isGhost==1)
 		sdrawcanvas();	
