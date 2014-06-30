@@ -843,6 +843,12 @@ function simulate(mode,imgIn) {
 					ci2++;
 					sdrawcanvas();
 					drawcanvas();
+				} else if(csv2[ci2][0] == 'l') {
+					var items = csv2[ci2].split(",");
+					pic_obj.push(new object(-3,parseInt(items[1]*canvas.width/100),parseInt(items[2]*canvas.height/100),0,0,0,parseInt(items[3]*canvas.width/100),parseInt(items[4]*canvas.height/100),"",""));
+					ci2++;
+					sdrawcanvas();
+					drawcanvas();
 				} else if(csv2[ci2][0] == 't') {
 
 					var items = csv2[ci2].split(",");
