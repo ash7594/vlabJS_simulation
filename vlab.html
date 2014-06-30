@@ -192,6 +192,9 @@ gencsv.style.top = 0;
 loadcsv.style.left = window.innerWidth - 65;
 loadcsv.style.top = 20;
 
+var initialX = 0.3;
+var initialY = 0.4;
+
 var container = document.getElementById('container');
 var container2 = document.getElementById('container2');
 var con_text = document.getElementById('con_text');
@@ -524,7 +527,7 @@ function createobj(picid) {
 	if(pauseFunctionality == false && changeActive == 0) {
 		console.log("obj created");
 		message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
-		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
+		pic_obj.push(new object(picid,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,100,100,100,100,"",""));
 		///////
 		csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
 		///////
@@ -618,7 +621,7 @@ function textbox() {
 	}
 
 	message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
-	pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,con_info.value,con_text.value)); //20 is pixel size
+	pic_obj.push(new object(-2,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,50,20,50,20,con_info.value,con_text.value)); //20 is pixel size
 	csvString += "t," + pic_obj.length + "," + con_info.value + "," + con_text.value + "\n";
 	addAllEventListeners();
 	resumeImgListeners();
@@ -771,7 +774,7 @@ function simulate(mode,imgIn) {
 		document.getElementById("csvDisplay").innerHTML += (ci+1) + ". " + csv[ci] + "<BR>";
 		if(csv[ci][0] == 'a') {
 			var items = csv[ci].split(",");
-			spic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
+			spic_obj.push(new object(parseInt(items[1])+1,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,100,100,100,100,"",""));
 		} else if(csv[ci][0] == 't') {
 			var items = csv[ci].split(",");
 			//if(items[2] != "" && isGhost == 1) {
@@ -780,7 +783,7 @@ function simulate(mode,imgIn) {
 			//	container2.style.display = "block";
 			//	return;
 			//} else {
-				spic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+				spic_obj.push(new object(-2,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,50,20,50,20,items[2],items[3]));
 			//}
 		} else if(csv[ci][0] == 'l') {
 			var items = csv[ci].split(",");
@@ -879,7 +882,7 @@ function simulate(mode,imgIn) {
 			while(ci2<(ci)) {
 				if(csv2[ci2][0] == 'a') {
 					var items = csv2[ci2].split(",");
-					pic_obj.push(new object(parseInt(items[1])+1,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
+					pic_obj.push(new object(parseInt(items[1])+1,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,100,100,100,100,"",""));
 					ci2++;
 					sdrawcanvas();
 					drawcanvas();
@@ -906,9 +909,9 @@ function simulate(mode,imgIn) {
 				} else if(csv2[ci2][0] == 't') {
 					var items = csv2[ci2].split(",");
 					if(items[2] == "") {
-						pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+						pic_obj.push(new object(-2,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,50,20,50,20,items[2],items[3]));
 					} else {
-						pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
+						pic_obj.push(new object(-2,parseInt(initialX*canvas.width),parseInt(initialY*canvas.height),0,50,20,50,20,items[2],items[3]));
 						document.getElementById('ques').innerHTML = items[2];
 						container2.style.display = "block";
 						return;
