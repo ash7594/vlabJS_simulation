@@ -493,8 +493,10 @@ function zoom_rotate(e) {
 function findobj(e) {
 	for(var i=0;i<pic_obj.length;i++)
 		if((e.clientX - offsetX)  >= pic_obj[i].x && (e.clientX - offsetX) <= (pic_obj[i].x+pic_obj[i].fw) && (e.clientY - offsetY) >= pic_obj[i].y && (e.clientY - offsetY) <= (pic_obj[i].y+pic_obj[i].fh)) {
-			current_img = i;
-			break;
+			if(pic_obj[i].id != -3) {
+				current_img = i;
+				break;
+			}
 		}	
 }
 
@@ -546,6 +548,7 @@ function drawlinemove(e) {
 	ctx.lineWidth = chosenLineWidth;
 	ctx.stroke();
 	ctx.closePath();
+	message.innerHTML = "Click at a point to end drawing line";
 }
 
 function drawlineend(e) {
