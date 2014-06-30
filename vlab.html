@@ -231,6 +231,7 @@ var spic_obj = [];
 var lineStartx;
 var lineStarty;
 var chosenLineWidth = 5;
+var changeActive = 0;
 
 var simtym;
 var csv,ci;
@@ -495,6 +496,13 @@ function zoom_rotate(e) {
 			var cimg = current_img+1;
 			csvString += "d," + cimg + "\n";
 			current_img = -1;
+		} else if(e.keyCode == 67) {
+			message.innerHTML = "Select the object which will replace current";
+			////////////
+			change_mode = 4; //change obj
+			////////////
+			changeActive = 1;
+			removeAllEventListeners();
 		}
 	if(isGhost==1)
 		sdrawcanvas();	
@@ -513,7 +521,7 @@ function findobj(e) {
 }
 
 function createobj(picid) {
-	if(pauseFunctionality == false) {
+	if(pauseFunctionality == false && changeActive == 0) {
 		console.log("obj created");
 		message.innerHTML = "Hold object and press +/- to zoom<BR>Hold object and press arrow keys to rotate";
 		pic_obj.push(new object(picid,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,100,100,100,100,"",""));
@@ -521,11 +529,21 @@ function createobj(picid) {
 		csvString += "a," + (picid-1) + "," + pic_obj.length + "\n";
 		///////
 		drawcanvas();
+	} else if(changeActive == 1) {
+		pic_obj.push(new object(picid,pic_obj[current_img].x,pic_obj[current_img].y,pic_obj[current_img].a,100,100,pic_obj[current_img].fw,pic_obj[current_img].fh,"",""));
+		pic_obj.splice(current_img,1);
+		///////
+		csvString += "c," + (current_img+1) + "," + (picid-1) + "\n";
+		///////
+		current_img = -1;
+		changeActive = 0;
+		addAllEventListeners();
+		drawcanvas();
 	}
 }
 
 function drawobj(drawid) {
-	if(pauseFunctionality == false) {
+	if(pauseFunctionality == false && changeActive == 0) {
 		console.log("draw created");
 		if(drawid == -2) {
 			message.innerHTML = "Fill details about the text";
@@ -540,6 +558,8 @@ function drawobj(drawid) {
 			stopImgListeners();
 			canvas.addEventListener("click",drawlinestart);
 		}
+	} else if(changeActive == 1) {
+		message.innerHTML = "Only Pictures can be used for REPLACE";
 	}
 }
 
@@ -871,7 +891,6 @@ function simulate(mode,imgIn) {
 					sdrawcanvas();
 					drawcanvas();
 				} else if(csv2[ci2][0] == 't') {
-
 					var items = csv2[ci2].split(",");
 					if(items[2] == "") {
 						pic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
