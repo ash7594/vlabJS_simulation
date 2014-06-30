@@ -228,6 +228,10 @@ container2.style.top = (window.innerHeight)/2 - 100;
 var pic_obj = [];
 var spic_obj = [];
 
+var lineStartx;
+var lineStarty;
+var chosenLineWidth = 5;
+
 var simtym;
 var csv,ci;
 var sr,ss;
@@ -285,9 +289,16 @@ function drawcanvas() {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 	for(var i=0;i<pic_obj.length;i++) {
 		if(pic_obj[i].a == 0) {
-			if(pic_obj[i].id < 0) {
+			if(pic_obj[i].id == -2) {
 				ctx.font= pic_obj[i].fh + "px Georgia";
 				ctx.fillText(pic_obj[i].text,pic_obj[i].x,pic_obj[i].y+pic_obj[i].fh);
+			} else if(pic_obj[i].id == -3) {
+				ctx.beginPath();
+				ctx.moveTo(pic_obj[i].x,pic_obj[i].y);
+				ctx.lineTo(pic_obj[i].fw,pic_obj[i].fh);
+				ctx.lineWidth = chosenLineWidth;
+				ctx.stroke();
+				ctx.closePath();
 			} else
 				ctx.drawImage(document.getElementById("img"+pic_obj[i].id),pic_obj[i].x,pic_obj[i].y,pic_obj[i].fw,pic_obj[i].fh);
 		}
@@ -295,9 +306,16 @@ function drawcanvas() {
 			ctx.save();
 			ctx.translate(pic_obj[i].x+pic_obj[i].fw/2,pic_obj[i].y+pic_obj[i].fh/2);
 			ctx.rotate(pic_obj[i].a*Math.PI/180);
-			if(pic_obj[i].id < 0) {
+			if(pic_obj[i].id == -2) {
 				ctx.font= pic_obj[i].fh + "px Georgia";
 				ctx.fillText(pic_obj[i].text,-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2+pic_obj[i].fh);
+			} else if(pic_obj[i].id == -3) {
+				ctx.beginPath();
+				ctx.moveTo(pic_obj[i].x,pic_obj[i].y);
+				ctx.lineTo(pic_obj[i].fw,pic_obj[i].fh);
+				ctx.lineWidth = chosenLineWidth;
+				ctx.stroke();
+				ctx.closePath();
 			} else
 				ctx.drawImage(document.getElementById("img"+pic_obj[i].id),-1*pic_obj[i].fw/2,-1*pic_obj[i].fh/2,pic_obj[i].fw,pic_obj[i].fh);
 			ctx.restore();
@@ -311,9 +329,11 @@ function sdrawcanvas() {
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	for(var i=0;i<spic_obj.length;i++) {
 		if(spic_obj[i].a == 0) {
-			if(spic_obj[i].id < 0) {
+			if(spic_obj[i].id == -2) {
 				ctx.font= spic_obj[i].fh + "px Georgia";
 				ctx.fillText(spic_obj[i].text,spic_obj[i].x,spic_obj[i].y+spic_obj[i].fh);
+			} else if(spic_obj[i].id == -3) {
+
 			} else
 				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),spic_obj[i].x,spic_obj[i].y,spic_obj[i].fw,spic_obj[i].fh);
 		}
@@ -321,9 +341,11 @@ function sdrawcanvas() {
 			ctx.save();
 			ctx.translate(spic_obj[i].x+spic_obj[i].fw/2,spic_obj[i].y+spic_obj[i].fh/2);
 			ctx.rotate(spic_obj[i].a*Math.PI/180);
-			if(spic_obj[i].id < 0) {
+			if(spic_obj[i].id == -2) {
 				ctx.font= spic_obj[i].fh + "px Georgia";
 				ctx.fillText(spic_obj[i].text,-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2+spic_obj[i].fh);
+			} else if(spic_obj[i].id == -3) {
+
 			} else
 				ctx.drawImage(document.getElementById("img"+spic_obj[i].id),-1*spic_obj[i].fw/2,-1*spic_obj[i].fh/2,spic_obj[i].fw,spic_obj[i].fh);
 			ctx.restore();
@@ -488,8 +510,48 @@ function drawobj(drawid) {
 			con_text.value = "";
 			con_info.value = "";
 			container.style.display = "block";
+		} else if(drawid == -3) {
+			message.innerHTML = "Click at a point to begin drawing line";
+			removeAllEventListeners();
+			stopImgListeners();
+			canvas.addEventListener("click",drawlinestart);
 		}
 	}
+}
+
+function drawlinestart(e) {
+	lineStartx = parseInt(e.clientX - offsetX);
+	lineStarty = parseInt(e.clientY - offsetY);
+	canvas.removeEventListener("click",drawlinestart);
+	canvas.addEventListener("mousemove",drawlinemove);
+	canvas.addEventListener("click",drawlineend);
+}
+
+function drawlinemove(e) {
+	//ctx.clearRect(0,0,canvas.width,canvas.height);
+	drawcanvas();
+	ctx.beginPath();
+	ctx.moveTo(lineStartx,lineStarty);
+	ctx.lineTo(e.clientX - offsetX,e.clientY - offsetY);
+	ctx.lineWidth = chosenLineWidth;
+	ctx.stroke();
+	ctx.closePath();
+}
+
+function drawlineend(e) {
+	canvas.removeEventListener("mousemove",drawlinemove);
+	canvas.removeEventListener("click",drawlineend);
+	var xin = parseInt(lineStartx/canvas.width*100);
+	var yin = parseInt(lineStarty/canvas.height*100);
+	var xf = parseInt((e.clientX - offsetX)/canvas.width*100);
+	var yf = parseInt((e.clientY - offsetY)/canvas.height*100);
+	///////
+	csvString += "l," + xin + "," + yin + "," + xf + "," + yf + "\n";
+	///////
+	pic_obj.push(new object(-3,parseInt(xin*canvas.width/100),parseInt(yin*canvas.height/100),0,0,0,parseInt(xf*canvas.width/100),parseInt(yf*canvas.height/100),"",""));
+	addAllEventListeners();
+	resumeImgListeners();
+	drawcanvas();
 }
 
 function stopImgListeners() {
