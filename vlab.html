@@ -464,7 +464,7 @@ function move_img(e) {
 }
 
 function zoom_rotate(e) {
-	//console.log(e.keyCode);
+	console.log(e.keyCode);
 	if(current_img != -1) {
 		if(e.keyCode == 107 && (change_mode == -1 || change_mode == 1)) {
 			////////////
@@ -700,8 +700,10 @@ function removeAllEventListeners() {
 }
 
 function nextStepSim() {
-	if(ci!=(csv.length-1))
+	if(ci!=(csv.length-1)) {
+		nextsim.removeEventListener("click",nextStepSim);
 		simulate(0,0);
+	}	
 }
 
 function endStepSim() {
@@ -948,6 +950,7 @@ function simulate(mode,imgIn) {
 		drawcanvas();
 
 	if(mode==0 && isComSim==0) {
+		nextsim.addEventListener("click",nextStepSim);
 		return;
 	} else if(ci!=(csv.length-1)) {
 		if(mode == 0)
