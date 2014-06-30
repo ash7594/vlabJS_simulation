@@ -747,6 +747,9 @@ function simulate(mode,imgIn) {
 			//} else {
 				spic_obj.push(new object(-2,parseInt(0.1*canvas.width),parseInt(0.32*canvas.height),0,50,20,50,20,items[2],items[3]));
 			//}
+		} else if(csv[ci][0] == 'l') {
+			var items = csv[ci].split(",");
+			spic_obj.push(new object(-3,parseInt(items[1]*canvas.width/100),parseInt(items[2]*canvas.height/100),0,0,0,parseInt(items[3]*canvas.width/100),parseInt(items[4]*canvas.height/100),"",""));
 		} else if(csv[ci][0] == 'm') {
 			var items = csv[ci].split(",");
 			imgIn = parseInt(items[1])-1;
